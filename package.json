@@ -15,7 +15,9 @@
     "axios": "^1.4.0",
     "eslint-import-resolver-webpack": "^0.13.2",
     "jquery": "^3.7.0",
-    "lodash": "^4.17.21"
+    "lodash": "^4.17.21",
+    "swiper": "^9.4.1",
+    "vant": "^2.12.54"
   },
   "config": {
     "commitizen": {

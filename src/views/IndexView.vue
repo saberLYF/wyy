@@ -8,10 +8,15 @@
         <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
           class="w-[6vw] h-[6vw] mr-[-15vw] mt-[1.75vw] z-[1]" />
         <input type="text"
-          :class="['w-[75vw]', 'h-[9vw]', 'rounded-[5vw]', 'outline-none', 'border border-solid', 'border-gray-400', 'px-[10vw]', header ? 'gradientColorStops' : 'bg-[#f8f9fd]', 'text-[3.5vw]']">
+          :class="['w-[75vw]', 'h-[9vw]', 'rounded-[5vw]', 'outline-none', 'border border-solid', 'border-gray-400', 'px-[10vw]', header ? 'gradientColorStops' : 'bg-[#f8f9fd]', 'text-[3.5vw]']"
+          :placeholder="SearchDefault.showKeyword" v-model="userSearchKeywords" @focus="show = true">
         <Icon icon="tabler:scan" color="#ccc" class="w-[6vw] h-[6vw] ml-[-15vw] mt-[1.75vw]" />
         <Icon icon="ph:microphone-light" color="#ccc" width="36" height="36" class="w-[8vw] h-[8vw]" />
       </div>
+      <van-popup v-model="show" position="right" :style="{ height: '100%', width: '100%' }">
+        <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
+          class="w-[6vw] h-[6vw] mr-[-15vw] mt-[1.75vw] z-[1]" @click.native="show = false" />
+      </van-popup>
       <!-- 轮播 -->
       <div class="p-[1.5vw] mt-[12vw]">
         <van-swipe class="my-swipe rounded-[5vw]" :autoplay="3000" indicator-color="white">
@@ -46,7 +51,7 @@
       <div class="mt-[3vw]">
         <ul class="overflow-auto flex justify-between menu">
           <template v-for="item in recommend">
-            <li class="flex flex-col items-center mr-[5vw] relative">
+            <li class="flex flex-col items-center mr-[5vw] relative" :key="item.id">
               <img :src="item.uiElement.image.imageUrl" alt="" class="w-[35vw] h-[35vw] rounded-[3vw]">
               <p class="text-[3vw] w-[30vw] text-[#3f4658] font-bold">{{ item.uiElement.mainTitle.title }}</p>
               <Icon icon="ph:play-fill" color="white" width="36" height="36"
@@ -71,7 +76,7 @@
     </div>
     <div class="w-screen  bg-[#f8f9fd] p-[1.5vw]">
       <h1 class="flex items-center font-bold font-mono text-[2.5vw] justify-between">
-        <span class="flex items-center">
+        <span class="flex items-center" v-if="customMade.uiElement.subTitle != null">
           {{ customMade.uiElement.subTitle.title }}/{{ customMade.creatives[4].uiElement.mainTitle.title }}
           <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]" />
         </span>
@@ -80,30 +85,59 @@
         </span>
       </h1>
       <div class="mt-[3vw] flex ">
-        <!-- <ul v-for="item in customMade.creatives" :key="item.id" class="w-[100%] menu">
-          <li v-for="items in item.resources" :key="items.id" class="flex w-[100vw] mb-[2vw]">
-            <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
-            <div>
-              <p class="w-[75vw]">{{ items.uiElement.mainTitle.title }}</p>
-              <p class="w-[75vw]">{{ items.uiElement.subTitle.title }}</p>
-            </div>
-          </li>
-        </ul> -->
-
         <van-swipe :show-indicators="false" :loop="false" class="w-[100vw]">
           <van-swipe-item v-for="item in customMade.creatives" :key="item.id">
             <ul>
               <li v-for="items in item.resources" :key="items.id" class="flex w-[100vw] mb-[2vw]">
                 <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
-                <div class="flex ml-[3vw] flex-col justify-center">
-                  <p class="text-[4vw]">{{ items.uiElement.mainTitle.title }}</p>
-                  <p class="text-[1.5vw]">{{ items.uiElement.subTitle.title }}</p>
+                <div class="flex ml-[3vw] flex-col justify-center ">
+                  <p class="text-[4vw] ">{{ items.uiElement.mainTitle.title }}</p>
+                  <p class="text-[1.5vw] text-[#3f4658]" v-if="items.uiElement.subTitle != undefined">{{ items.uiElement.subTitle.title }} - {{
+                    items.resourceExtInfo.artists[0].name }}</p>
                 </div>
               </li>
             </ul>
           </van-swipe-item>
         </van-swipe>
+      </div>
+    </div>
 
+    <!-- 排行榜 -->
+    <div class="w-screen  bg-[#f8f9fd] p-[1.5vw]">
+      <h1 class="flex items-center font-bold font-mono text-[2.5vw] justify-between">
+        <span class="flex items-center" v-if="charts.uiElement.subTitle != undefined">
+          {{ charts.uiElement.subTitle.title }}
+          <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]" />
+        </span>
+        <span>
+          <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
+        </span>
+      </h1>
+      <div class="mt-[3vw] flex items-center bg-[#f8f9fd] mr-[2vw]">
+        <van-swipe :show-indicators="false" :loop="false" class="w-[100vw] ">
+          <van-swipe-item v-for="item in charts.creatives" :key="item.id" class="bg-[#f8f9fd] p-[3vw]">
+            <div class="bg-[#fff] p-[3vw] drop-shadow-[0_10px_8px_rgba(0,0,0,0.15)]">
+                <h2 class="flex items-center font-bold font-mono text-[2vw]  justify-between">
+                <span class="flex items-center">
+                  {{ item.uiElement.mainTitle.title }}
+                  <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]" />
+                </span>
+                <span>
+                  {{ item.uiElement.mainTitle.titleDesc }}
+                </span>
+              </h2>
+              <ul class="top-[2vw]">
+                <li v-for="items in item.resources" :key="items.id" class="flex w-[100vw] mb-[2vw]">
+                  <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
+                  <div class="flex ml-[3vw] flex-col justify-center">
+                    <p class="text-[2.5vw] ">{{ items.uiElement.mainTitle.title }}</p>
+                    <p class="text-[1.5vw] text-[#3f4658]"></p>
+                  </div>
+                </li>
+              </ul>
+            </div>
+          </van-swipe-item>
+        </van-swipe>
       </div>
     </div>
   </div>
@@ -112,8 +146,9 @@
 import Vue from 'vue';
 import Vant from 'vant';
 import 'vant/lib/index.css';
+import _ from "lodash";
 Vue.use(Vant);
-import { fetchHomePage, fetchHomeDragonBall, Swipe, SwipeItem } from "@/request/index"
+import { fetchHomePage, fetchHomeDragonBall, fetchSearchDefault, fetchSearchSuggest } from "@/request/index"
 export default {
   data() {
     return {
@@ -125,6 +160,10 @@ export default {
       recommend: [],
       customMade: [],
       header: true,
+      SearchDefault: [],
+      userSearchKeywords: '',
+      show: false,
+      charts: [],
     };
   },
   mounted() {
@@ -146,12 +185,17 @@ export default {
     const res = await fetchHomePage().catch((err) => console.log(err));
     this.banners = res.data.data.blocks[0].extInfo.banners;
     this.recommend = res.data.data.blocks[1].creatives;
+    this.charts = res.data.data.blocks[3];
     this.customMade = res.data.data.blocks[5];
-    console.log(this.customMade);
+
 
     const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
     this.menu = ress.data.data;
+    console.log(ress.data.data);
 
+    const Default = await fetchSearchDefault().catch((err) => console.log(err));
+    this.SearchDefault = Default.data.data;
+    console.log(this.SearchDefault);
   },
   //监控某个响应数据发生变化之后执行指令的逻辑
   //methods、beforeCreate、created、watch中的this指向vm
@@ -162,6 +206,10 @@ export default {
         this.playlists = res.data.playlists;
       },
     },
+    userSearchKeywords: _.debounce(async function (keywords) {
+      const res = await fetchSearchSuggest(keywords);
+      console.log(res)
+    }, 300),
     immediate: true
   },
 
@@ -195,5 +243,18 @@ export default {
 .menu::-webkit-scrollbar {
   height: 0px;
   width: 20px;
+}
+
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
+}
+
+.block {
+  width: 120px;
+  height: 120px;
+  background-color: #fff;
 }
 </style>

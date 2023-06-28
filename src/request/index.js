@@ -7,3 +7,11 @@ export const fetchPlaylistHot = () => http.get('/playlist/hot');
 export const fetchHomePage = () => http.get('/homepage/block/page');
 export const fetchHomeDragonBall = () => http.get('/homepage/dragon/ball');
 export const fetchPlaylists = (cat) => http.get('/top/playlist', { params: { cat } });
+
+export const fetchSearchDefault = () => http.get('/search/default');
+
+export const fetchSearchSuggest = (params) => http.get('/search/suggest',{
+    params:{
+        keywords:params
+    }
+});

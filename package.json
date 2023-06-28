@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "cross-env NODE_ENV=development npx webpack-dev-server --config=./config/webpack.config.js",
     "prebuild": "rimraf dist",
-    "build": "cross-env NODE_ENV=production npx webpack",
+    "build": "cross-env NODE_ENV=production npx webpack --config=./config/webpack.config.js",
     "prepare": "husky install"
   },
   "author": "",

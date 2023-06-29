@@ -23,7 +23,6 @@ export default {
         this.charts = res.data.data.blocks[3];
         this.customMade = res.data.data.blocks[5];
         this.recommend = res.data.data.blocks[1].creatives;
-
         const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
         this.menu = ress.data.data;
     },

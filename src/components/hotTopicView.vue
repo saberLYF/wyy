@@ -4,7 +4,7 @@
         <span class="flex items-center text-[3.5vw]">
           热门话题
         </span>
-        <span>
+        <span @click="menu = !menu">
           <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
         </span>
       </h1>
@@ -57,7 +57,28 @@
             </li>
         </ul>
       </div>
+      <Drawer :title="'热门话题'" :show.sync="menu" >
+      <template #main>
+        <ul>
+          <li class="flex items-center mb-[2vw]">
+            <Icon icon="iconamoon:like" color="#3d4456" class="w-[5vw] h-[5vw]  mr-[3vw]"/>
+            <span class="text-[3vw] text-[#3d4456] font-bold">优秀推荐</span>
+          </li>
+          <li class="flex items-center mb-[2vw]">
+            <Icon icon="mdi:cancel-circle-outline" color="#3d4456" class="w-[5vw] h-[5vw] mr-[3vw]"/>
+            <span class="text-[3vw] text-[#3d4456] font-bold">减少推荐</span>
+          </li>
+        </ul>
+      </template>
+    </Drawer>
     </div>
 </template>
 <script>
+    export default {
+    data(){
+      return {
+        menu:false
+      }
+    },
+}
 </script>

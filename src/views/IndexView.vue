@@ -18,6 +18,9 @@
     <calendar/>
     <!-- 热门话题 -->
     <hotTopic/>
+
+
+
   </div>
 </template>
 <script>
@@ -42,6 +45,7 @@ export default {
     return {
       activeMenuItem: '',
       playlists: [],
+      header:'推荐歌单'
     };
   },
   methods: {
@@ -55,6 +59,9 @@ export default {
 }
 </script>
 <style>
+* {
+  font-family: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+}
 .active {
   color: red;
 }
@@ -95,4 +102,5 @@ export default {
   width: 120px;
   height: 120px;
   background-color: #fff;
-}</style>
+}
+</style>

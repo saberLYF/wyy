@@ -5,7 +5,7 @@
           {{ customMade.uiElement.subTitle.title }}/{{ customMade.creatives[4].uiElement.mainTitle.title }}
           <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]"/>
         </span>
-        <span>
+        <span @click="menu = !menu">
           <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
         </span>
       </h1>
@@ -25,6 +25,24 @@
           </van-swipe-item>
         </van-swipe>
       </div>
+      <Drawer :title="'新歌新碟/数字专辑'" :show.sync="menu" >
+      <template #main>
+        <ul>
+          <li class="flex items-center mb-[2vw]">
+            <Icon icon="iconamoon:like" color="#3d4456" class="w-[5vw] h-[5vw]  mr-[3vw]"/>
+            <span class="text-[3vw] text-[#3d4456] font-bold">优秀推荐</span>
+          </li>
+          <li class="flex items-center mb-[2vw]">
+            <Icon icon="mdi:cancel-circle-outline" color="#3d4456" class="w-[5vw] h-[5vw] mr-[3vw]"/>
+            <span class="text-[3vw] text-[#3d4456] font-bold">减少推荐</span>
+          </li>
+          <li class="flex items-center mb-[2vw]">
+            <Icon icon="mingcute:more-4-line" color="#3d4456"  class="w-[5vw] h-[5vw]  mr-[3vw]"/>
+            <span class="text-[3vw] text-[#3d4456] font-bold">更多内容</span>
+          </li>
+        </ul>
+      </template>
+    </Drawer>
     </div>
 </template>
 <script>
@@ -34,6 +52,12 @@ Vue.use(Swipe);
 Vue.use(SwipeItem);
 
 export default {
-    props:["customMade"]
+    props:["customMade"],
+    data(){
+      return {
+        menu:false
+      }
+    }
+
 }
 </script>

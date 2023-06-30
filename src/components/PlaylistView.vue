@@ -10,34 +10,32 @@
       </span>
     </h1>
     <div class="mt-[3vw] flex">
-      <!-- <div class=" relative w-[40vw] h-[35vw]">
-        <template v-for="(item, index) in Personalized">
-          <div v-if="index < 3" class="flex absolute flex-col items-center mr-[5vw] h-[45vw] " :key="item.id">
-            <img :src="item.picUrl" alt="" class="w-[30vw] h-[35vw] rounded-[3vw]">
-            <p>{{ item.name }}</p>
-          </div>
-        </template>
-      </div> -->
       <ul class="overflow-auto flex justify-between menu">
-        <!-- resources -->
         <template>
           <li class="flex flex-col items-center mr-[5vw] h-[45vw] relative">
-            <div class="relative overflow-hidden w-[30vw] h-[35vw]">
-              <template v-for="(item, index) in Personalized">
-                <div v-if="index < 3" class="" :key="item.id">
-                  <img :src="item.picUrl" alt="" class="w-[30vw] h-[35vw] rounded-[3vw]">
-                  <p>{{ item.name }}</p>
+            <div class="relative overflow-hidden w-[30vw] h-[30vw] mt-[2vw]">
+              <transition name="abc">
+                <div v-if="show" class="absolute ">
+                  <img :src="imga[n]" alt="" class="w-[30vw] h-[30vw] rounded-[1.5vw]">
                 </div>
-              </template>
+              </transition>
+              <transition name="abc">
+                  <div v-if="!show" class="absolute">
+                    <img :src="imga[y]" alt="" class="w-[30vw] h-[30vw]  rounded-[1.5vw]">
+                  </div>
+              </transition>
             </div>
+            <transition name="abcd">
+              <p class="text-[3vw] w-[30vw] text-[#3f4658] font-bold">{{ names[x] }}</p>
+            </transition>
           </li>
-          <li class="flex flex-col items-center mr-[5vw] h-[45vw] relative" v-for="item in propName" :key="item.id">
-            <img :src="item.uiElement.image.imageUrl" alt="" class="w-[40vw] h-[35vw] rounded-[3vw] z-10 mt-[2vw]">
-            <span class="w-[25vw] flex h-[3vw] rounded-[4vw] absolute top-[1.2vw] z-[1] blg"></span>
+          <li class="flex flex-col items-center mr-[5vw] h-[35vw] relative" v-for="item in propName" :key="item.id">
+            <img :src="item.uiElement.image.imageUrl" alt="" class="w-[35vw] h-[35vw] rounded-[1.5vw] mt-[2vw] z-[1]">
+            <span class="w-[25vw] flex h-[3vw] rounded-[4vw] absolute top-[1.2vw]  blg z-[0]"></span>
             <p class="text-[3vw] w-[30vw] text-[#3f4658] font-bold">{{ item.uiElement.mainTitle.title }}</p>
             <Icon icon="ph:play-fill" color="white" width="36" height="36"
-              class="absolute w-[4vw] h-[4vw] bottom-[10vw] right-[3vw] mr-[2vw]" />
-            <span class="absolute text-[#fff] text-[2vw] flex right-[2vw] top-[1.5vw] items-center font-bold">
+              class="absolute w-[4vw] h-[4vw] bottom-[5vw] right-[1.5vw] mr-[2vw] z-[2]" />
+            <span class="absolute text-[#fff] text-[2vw] flex right-[2vw] top-[3vw] items-center font-bold z-[2]">
               <Icon icon="ph:play-fill" color="white" width="36" height="36" class="w-[2.5vw] h-[2.5vw]" />
               <template
                 v-if="item.resources[0].resourceExtInfo.playCount < 100000000 && item.resources[0].resourceExtInfo.playCount > 9999">
@@ -54,7 +52,7 @@
         </template>
       </ul>
     </div>
-    <Drawer :title="'推荐歌单'" :show.sync="menu">
+    <Drawer :title="'推荐歌单'" :show.sync="menu" :str="'bottom'">
       <template #main>
         <ul>
           <li class="flex items-center mb-[2vw]">
@@ -81,14 +79,44 @@ export default {
   data() {
     return {
       menu: false,
-      Personalized: {}
+      Personalized: {},
+      names: [],
+      img: [],
+      imga: [],
+      show: true,
+      n: 0,
+      y: 1,
+      x: 0,
     }
   },
   async created() {
     const res = await fetchPersonalized().catch((err) => console.log(err));
     this.Personalized = res.data.result;
-    console.log(this.Personalized)
+    for (let i = 0; i < 3; i++) {
+      this.names.push(this.Personalized[i].name);
+      this.img.push(this.Personalized[i].picUrl);
+    }
+    for (let i = 0; i < 3; i++) {
+      this.imga.push(this.img[i])
+    }
+    setInterval(()=>{
+      this.show = !this.show
+      this.x >= 2 ? this.x = 0 : this.x ++;
+      if(this.show == true){
+        this.n++;
+        if(this.n >= 3){
+          this.n = 0
+        }
+      }else{
+        this.y++
+        if(this.y >= 3){
+          this.y = 0
+        }
+      }
+      }, 4000)
   },
+  methods:{
+  }
 }
 </script>
 <style>
@@ -103,4 +131,50 @@ export default {
   -webkit-border-radius: 25px;
   color: rgb(200, 200, 200);
 }
+
+.abc-enter {
+  transform: translateY(100%) scale(0.7);
+  transform-origin: center;
+}
+
+.abc-enter-active {
+  transition: all ease-in-out 1.2s;
+}
+
+.abc-enter-to {
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+}
+
+.abc-leave {
+  transform: translateY(0) scale(1);
+  transform-origin: center;
+}
+
+.abc-leave-active {
+  transition: all ease-in-out 1.2s;
+}
+
+.abc-leave-to {
+  transform: translateY(-100%) scale(0.7);
+  transform-origin: center;
+}
+
+
+.abcd-enter-to,
+.abcd-leave {
+    opacity: 1;
+}
+
+.abcd-enter-active,
+.abcd-leave-active {
+    transition: opacity .75s;
+}
+
+.abcd-leave-to,
+.abcd-enter {
+    opacity: 0;
+}
+
+
 </style>

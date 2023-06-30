@@ -25,6 +25,7 @@ export default {
         this.recommend = res.data.data.blocks[1].creatives;
         const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
         this.menu = ress.data.data;
+        console.log(this.charts);
     },
 }
 </script>

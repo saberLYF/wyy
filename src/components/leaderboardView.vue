@@ -23,19 +23,21 @@
                 </span>
               </h2>
               <ul class="top-[2vw]">
-                <li v-for="items in item.resources" :key="items.id" class="flex w-[100vw] mb-[2vw]">
-                  <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
+                <li v-for="(items,index) in item.resources" :key="items.id" class="flex w-[75vw] items-center relative mb-[2vw]">
+                  <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw] mr-[2vw]">
+                  <span :class="[index+1 == 1 ? 'text-[#cdac69]': index+1 == 2 ? 'text-[#747ca0]' : index+1 ==  3 ? 'text-[#bd744b]' : 'text-[#747ca0]', 'text-[4vw]','font-bold',]">{{ index+1 }}</span>
                   <div class="flex ml-[3vw] flex-col justify-center">
-                    <p class="text-[2.5vw] ">{{ items.uiElement.mainTitle.title }}</p>
-                    <p class="text-[1.5vw] text-[#3f4658]"></p>
+                    <p class="text-[2.5vw] overflow-hidden whitespace-nowrap text-ellipsis w-[45vw]">{{ items.uiElement.mainTitle.title }}</p>
+                    <p class="text-[1.5vw] text-[#3f4658]">{{  }}</p>
                   </div>
+                  <span :class=" ['absolute','right-0',index+1==1 ? 'text-[#ec4e4d]' : 'text-[#4ca786]'] ">{{ items.uiElement.labelText.text }}</span>
                 </li>
               </ul>
             </div>
           </van-swipe-item>
         </van-swipe>
       </div>
-      <Drawer :title="'排行榜'" :show.sync="menu" >
+      <Drawer :title="'排行榜'" :show.sync="menu" :str="'bottom'">
       <template #main>
         <ul>
           <li class="flex items-center mb-[2vw]">
@@ -64,7 +66,8 @@ export default {
     props:["charts"],
     data(){
       return {
-        menu:false
+        menu:false,
+        index:''
       }
     }
 }

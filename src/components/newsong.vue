@@ -1,7 +1,7 @@
 <template>
     <div class="w-screen  bg-[#f8f9fd] p-[1.5vw]">
       <h1 class="flex items-center font-bold font-mono text-[3.5vw] justify-between">
-        <span class="flex items-center" v-if="customMade.length != 0">
+        <span class="flex items-center text-[#3e465b]" v-if="customMade.length != 0">
           {{ customMade.uiElement.subTitle.title }}/{{ customMade.creatives[4].uiElement.mainTitle.title }}
           <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]"/>
         </span>
@@ -16,8 +16,8 @@
               <li v-for="items in item.resources" :key="items.id" class="flex w-[100vw] mb-[2vw]">
                 <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
                 <div class="flex ml-[3vw] flex-col justify-center ">
-                  <p class="text-[4vw] ">{{ items.uiElement.mainTitle.title }}</p>
-                  <p class="text-[1.5vw] text-[#3f4658]" v-if="items.uiElement.subTitle != undefined">{{ items.uiElement.subTitle.title }} - {{
+                  <p class="text-[4vw] text-[#3e465b]">{{ items.uiElement.mainTitle.title }}</p>
+                  <p class="text-[1.5vw] text-[#828a97]" v-if="items.uiElement.subTitle != undefined">{{ items.uiElement.subTitle.title }} - {{
                     items.resourceExtInfo.artists[0].name }}</p>
                 </div>
               </li>
@@ -25,7 +25,7 @@
           </van-swipe-item>
         </van-swipe>
       </div>
-      <Drawer :title="'新歌新碟/数字专辑'" :show.sync="menu" >
+      <Drawer :title="'新歌新碟/数字专辑'" :show.sync="menu" :str="'bottom'">
       <template #main>
         <ul>
           <li class="flex items-center mb-[2vw]">

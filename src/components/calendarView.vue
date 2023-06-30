@@ -20,7 +20,7 @@
             </li>
         </ul>
       </div>
-      <Drawer :title="'音乐日历'" :show.sync="menu" >
+      <Drawer :title="'音乐日历'" :show.sync="menu" :str="'bottom'">
       <template #main>
         <ul>
           <li class="flex items-center mb-[2vw]">

@@ -9,7 +9,7 @@
         <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
       </span>
     </h1>
-    <div class="mt-[3vw] p-[1.5vw] flex">
+    <div class="mt-[1.5vw] p-[1.5vw] flex">
       <ul class="overflow-auto flex justify-between menu">
         <template>
           <li class="flex flex-col items-center mr-[5vw] h-[45vw] relative">

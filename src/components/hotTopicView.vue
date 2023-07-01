@@ -1,6 +1,6 @@
 <template>
     <div class="w-screen  bg-[#f8f9fd]  dark:bg-gray-900">
-      <h1 class="flex p-[1.5vw] items-center font-bold font-mono text-[2.5vw] justify-between">
+      <h1 class="flex p-[1.5vw] pt-[3vw] items-center font-bold font-mono text-[2.5vw] justify-between">
         <span class="flex  items-center text-[3.5vw]">
           热门话题
         </span>

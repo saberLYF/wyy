@@ -10,14 +10,17 @@
                 class="w-[6vw] h-[6vw] mr-[-15vw] mt-[1.75vw] z-[1]" />
             <input type="text"
                 :class="['w-[75vw]','dark:bg-[#3b343b]','h-[9vw]', 'rounded-[5vw]', 'outline-none', 'border border-solid', 'border-gray-400', 'px-[10vw]', header && head == true ? ['gradientColorStops','dark:bg-[#1b1b23]'] : ['bg-[#f8f9fd]','dark:bg-[#1b1b23]'], 'text-[3.5vw]']"
-                :placeholder="SearchDefault.showKeyword" v-model="userSearchKeywords" @focus="show = true">
+                :placeholder="SearchDefault.showKeyword" v-model="userSearchKeywords"
+                @click="$router.push('./SearchView')"
+                >
             <Icon icon="tabler:scan" color="#ccc" class="w-[6vw] h-[6vw] ml-[-15vw] mt-[1.75vw]" />
             <Icon icon="ph:microphone-light" color="#ccc" width="36" height="36" class="w-[8vw] h-[8vw]" />
         </div>
-        <van-popup v-model="show" position="right" :style="{ height: '100%', width: '100%' }" class="dark:bg-[#271d26]">
+        <!-- <van-popup v-model="show" position="right" :style="{ height: '100%', width: '100%' }" class="dark:bg-[#271d26]">
             <div class="flex justify-between items-center p-[3vw]">
                 <Icon icon="icon-park-outline:left" color="#ccc" width="36" height="36" class="w-[6vw] h-[6vw]  z-[1]"
                     @click.native="show = false" />
+                    @focus="show = true"
                 <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
                     class="w-[6vw] h-[6vw] mr-[-13vw] mt-[.75vw] z-[1]" />
                 <input type="text"
@@ -36,7 +39,7 @@
                     </ul>
                 </div>
             </template>
-        </van-popup>
+        </van-popup> -->
         <Drawer :title="'标题'" :show.sync="shows" :str="'left'" :bgcolor="'#'+'f6f6f6'">
             <template #main>
                 <header class="flex  w-[69vw] pb-[2vw] justify-between items-center">
@@ -356,10 +359,7 @@
     </div>
 </template>
 <script>
-import Vue from 'vue';
-import { Popup } from 'vant';
 import { fetchSearchSuggest, fetchSearchDefault } from "@/request/index"
-Vue.use(Popup);
 export default {
     props: ['cols'],
     props:{
@@ -367,7 +367,7 @@ export default {
             type:Boolean,
             default:false,
         },
-    },  
+    },
     data() {
         return {
             show: false,
@@ -384,10 +384,12 @@ export default {
     mounted() {
         let that = this
         window.addEventListener('scroll', function () {
-            if (document.documentElement.scrollTop != 0) {
+            if(this.show != undefined){
+                if (document.documentElement.scrollTop != 0) {
                 that.header = false
-            } else if(this.document.querySelector('#wrap').classList.contains('dark') == false){
-                that.header = true
+                } else if(this.document.querySelector('#wrap').classList.contains('dark') == false){
+                    that.header = true
+                }
             }
         });
     },
@@ -418,7 +420,7 @@ export default {
             this.icon = !this.icon
             this.head == false
             this.header == false
-            this.icon==false ? this.col="#383838" : this.col="#fff" 
+            this.icon==false ? this.col="#383838" : this.col="#fff"
             this.cols= this.col
             this.$emit('clicks',this.cols);
             console.log(this.col);

@@ -1,31 +1,47 @@
 <template>
-    <IndexView :menus="menu"  :bannerss="banners" :chartss="charts" :customMades="customMade" :recommends="recommend"/>
+   <div class="w-screen h-screen relative">
+    <transition :name="transitionName">
+        <router-view/>
+    </transition>
+  </div>
 </template>
 <script>
-import IndexView from '@/views/IndexView.vue';
-import { fetchHomePage, fetchHomeDragonBall } from "@/request/index"
 export default {
-    components: { IndexView },
     data() {
         return {
-            visible: true,
-            menu:[],
-            banners:[],
-            charts:[],
-            customMade:[],
-            recommend:[],
+            transitionName: 'fade', // 过渡类名
         };
     },
-    async created() {
-        window.vm = this;
-        const res = await fetchHomePage().catch((err) => console.log(err));
-        this.banners = res.data.data.blocks[0].extInfo.banners;
-        this.charts = res.data.data.blocks[3];
-        this.customMade = res.data.data.blocks[5];
-        this.recommend = res.data.data.blocks[1].creatives;
-        const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
-        this.menu = ress.data.data;
-        console.log(this.charts);
-    },
+    watch: {
+    $route(to, from) {
+      // 根据路由变化设置不同的过渡效果
+      if (from === 'IndexView' && to === 'SearchView') {
+        this.transitionName = 'fade'; // 设置过渡类名
+      } else if (from === 'SearchView' && to === 'IndexView') {
+        this.transitionName = 'slide'; // 设置过渡类名
+      }
+    }
+  },
 }
 </script>
+<style>
+.fade-enter-active,
+.fade-leave-active {
+    transition: all .75s;
+}
+
+.fade-leave-to,
+.fade-enter {
+    right: -100%;
+}
+
+.fade-enter-to,
+.fade-leave {
+    right: -100%;
+}
+
+.fade-enter-to,
+.fade-leave {
+    right: 0;
+}
+</style>

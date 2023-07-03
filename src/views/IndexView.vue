@@ -14,15 +14,15 @@
       <!-- 菜单栏 -->
       <menuView :menu="menus" />
       <!-- 推荐歌单 -->
-      <playlistView :propName="recommends" :col="cor"/>
+      <playlistView :propName="recommends" :col="cor" />
       <!-- 新歌新碟-->
       <newsong :customMade="customMades" :col="cor"></newsong>
       <!-- 排行榜 -->
       <leaderboard :charts="chartss" :col="cor"></leaderboard>
       <!-- 音乐日历 -->
-      <calendar :col="cor"/>
+      <calendar :col="cor" />
       <!-- 热门话题 -->
-      <hotTopic :col="cor"/>
+      <hotTopic :col="cor" />
     </div>
   </div>
 </template>
@@ -32,8 +32,8 @@
 // Vue.use(Vant);
 import 'vant/lib/index.css';
 import _ from "lodash";
+import { fetchHomePage, fetchHomeDragonBall } from "@/request/index";
 export default {
-  props: ['menus', 'bannerss', 'chartss', 'customMades', 'recommends'],
   components: {
     bannerView: () => import('@/components/bannerView.vue'),
     menuView: () => import('@/components/menuView.vue'),
@@ -50,20 +50,31 @@ export default {
       playlists: [],
       header: '推荐歌单',
       switchs: false,
-      cor:'#3d4456'
+      cor: '#3d4456',
+      menus: [],
+      bannerss: [],
+      chartss: [],
+      customMades: [],
+      recommends: [],
     };
   },
   methods: {
     toggleMenu(name) {
       this.activeMenuItem = name;
     },
-    gets(data){
+    gets(data) {
       this.cor = data
       console.log(data)
     }
   },
   async created() {
-
+    const res = await fetchHomePage().catch((err) => console.log(err));
+    this.bannerss = res.data.data.blocks[0].extInfo.banners;
+    this.chartss = res.data.data.blocks[3];
+    this.customMades = res.data.data.blocks[5];
+    this.recommends = res.data.data.blocks[1].creatives;
+    const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
+    this.menus = ress.data.data;
   },
 }
 </script>
@@ -122,6 +133,7 @@ export default {
   height: 120px;
   background-color: #fff;
 }
+
 /* .dark {
   background-color: #333;
   color: #fff;

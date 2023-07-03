@@ -9,7 +9,7 @@
           <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
         </span>
       </h1>
-      <div class="mt-[3vw]  items-center bg-[#fff] mr-[2vw] p-[3vw] rounded-[1vw] dark:bg-[#26262e] ">
+      <div class="mt-[3vw] ml-[3vw] items-center bg-[#fff] mr-[2vw] p-[3vw] rounded-[1vw] dark:bg-[#26262e] ">
         <ul v-for="(itme,index) in startTime.calendarEvents" :key="itme.id">
             <li class="flex justify-between items-center  border-solid border-b-[.075vw] border-gray-200 py-[3vw] dark:border-[#a8a8aa]"
                 :class="index != 0 ? 'border-none' : '' "

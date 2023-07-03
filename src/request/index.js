@@ -15,3 +15,5 @@ export const fetchSearchSuggest = (params) => http.get('/search/suggest',{
 });
 export const fetchStartTime = () => axios.get('https://netease-cloud-music-api-five-roan-88.vercel.app/calendar?startTime=1677417600000&endTime=1677417600000');
 export const fetchPersonalized = () => axios.get('https://netease-cloud-music-c2c1ys55f-cc-0820.vercel.app/personalized');
+
+export const fetchDetail = () => http.get('/search/hot/detail');

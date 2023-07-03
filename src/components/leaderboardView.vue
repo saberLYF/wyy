@@ -9,7 +9,7 @@
           <Icon icon="ri:more-2-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
         </span>
       </h1>
-      <div class="mt-[3vw] p-[1.5vw] flex items-center bg-[#f8f9fd] dark:bg-gray-900 mr-[2vw]">
+      <div class="mt-[1.5vw] p-[1.5vw] flex items-center bg-[#f8f9fd] dark:bg-gray-900 mr-[2vw]">
         <van-swipe :show-indicators="false" :loop="false" class="w-[100vw] ">
           <van-swipe-item v-for="item in charts.creatives" :key="item.id" class="bg-[#f8f9fd] dark:bg-gray-900 p-[3vw]">
             <div class="bg-[#fff] dark:bg-[#26262e] p-[3vw] drop-shadow-[0_10px_8px_rgba(0,0,0,0.15)] rounded-[2vw]">

@@ -1,47 +1,40 @@
 <template>
    <div class="w-screen h-screen relative">
-    <transition :name="transitionName">
+      <transition mode="out-in" :name="transitionName">
         <router-view/>
-    </transition>
+      </transition>
   </div>
 </template>
 <script>
 export default {
     data() {
         return {
-            transitionName: 'fade', // 过渡类名
+          transitionName:'slide'
         };
     },
     watch: {
-    $route(to, from) {
-      // 根据路由变化设置不同的过渡效果
-      if (from === 'IndexView' && to === 'SearchView') {
-        this.transitionName = 'fade'; // 设置过渡类名
-      } else if (from === 'SearchView' && to === 'IndexView') {
-        this.transitionName = 'slide'; // 设置过渡类名
-      }
-    }
+
   },
 }
 </script>
 <style>
-.fade-enter-active,
-.fade-leave-active {
-    transition: all .75s;
+.slide-enter-active,
+.slide-leave-active {
+    transition: all .75s ease-in;
 }
 
-.fade-leave-to,
-.fade-enter {
-    right: -100%;
+.slide-enter {
+  transform: translateX(100%);
+}
+.slide-enter-to {
+  transform: translateX(0%);
 }
 
-.fade-enter-to,
-.fade-leave {
-    right: -100%;
+.slide-leave {
+  transform: translateX(0%);
 }
 
-.fade-enter-to,
-.fade-leave {
-    right: 0;
+.slide-leave-to {
+  transform: translateX(-100%);
 }
 </style>

@@ -1,7 +1,7 @@
 <template>
   <div :class="{ 'dark': switchs }" id="wrap">
     <div class="w-[100vw] overflow-hidden bg-white text-[#000] relative dark:bg-gray-900 dark:text-[#fff]">
-      <div class="gradienPink">
+      <div class="gradienPink relative">
         <!-- 头部搜索框 -->
         <headinput :cols.sync="cor" @clicks="gets">
           <template #val>
@@ -56,6 +56,7 @@ export default {
       chartss: [],
       customMades: [],
       recommends: [],
+      page:[]
     };
   },
   methods: {

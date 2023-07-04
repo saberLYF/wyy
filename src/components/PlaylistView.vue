@@ -31,7 +31,7 @@
               <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ names[x] }}</p>
             </transition>
           </li>
-          <li class="flex flex-col items-center mr-[5vw] h-[35vw] relative" v-for="item in propName" :key="item.id">
+          <li class="flex flex-col items-center mr-[5vw] h-[35vw] relative" v-for="(item,index) in propName" :key="item.id" @click="getSonglist(index)">
             <img :src="item.uiElement.image.imageUrl" alt="" class="w-[35vw] h-[35vw] rounded-[1.5vw] mt-[2vw] z-[1]">
             <span class="w-[25vw] flex h-[3vw] rounded-[4vw] absolute top-[1.2vw] dark:bg-[#27272f] blg z-[0]"></span>
             <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ item.uiElement.mainTitle.title }}</p>
@@ -89,6 +89,7 @@ export default {
       n: 0,
       y: 1,
       x: 0,
+      page:[],
     }
   },
   async created() {
@@ -116,8 +117,19 @@ export default {
         }
       }
       }, 4000)
+      for(let key in this.propName){
+        this.page.push(this.propName[key].creativeId)
+      }
+    console.log(this.page);
   },
   methods:{
+    getSonglist(index){
+      console.log(this.page[index]);
+      this.$router.push({
+        path: '/SongList',
+        query: this.page[index]
+      });
+    }
   }
 }
 </script>

@@ -1,107 +1,198 @@
 <template >
-    <div class=" w-screen h-screen">
-        <header class="p-[4vw] w-[100%]  bg-[#958b50]">
+    <div class=" w-screen ">
+        <header class="p-[4vw] w-[100%]" :style="{ backgroundColor: rgb }">
             <div class="flex w-[100%] items-center justify-between text-[4vw] text-[#fff]">
-               <div class="flex items-center">
-                    <Icon icon="ph:arrow-left-light" color="#fff" width="36" height="36" class="w-[5vw] h-[5vw] mr-[1.5vw]" />
+                <div class="flex items-center">
+                    <Icon icon="ph:arrow-left-light" color="#fff" width="36" height="36"
+                        class="w-[5vw] h-[5vw] mr-[1.5vw]" />
                     <span>歌单</span>
-               </div>
-               <div class="flex items-center">
+                </div>
+                <div class="flex items-center">
                     <Icon icon="iconamoon:search-light" color="#fff" width="36" height="36"
-                    class="w-[5vw] h-[5vw] mr-[9vw]" />
+                        class="w-[5vw] h-[5vw] mr-[9vw]" />
                     <Icon icon="ri:more-2-fill" color="#fff" width="36" height="36" class="w-[5vw] h-[5vw] " />
-               </div>
+                </div>
             </div>
             <div class="flex mt-[5vw]">
                 <div class="w-[24vw] h-[24vw] ">
-                    <img :src="imgurl" alt="" class=" rounded-[2.5vw] w-[24vw] h-[24vw]" id="bgimg">
+                    <!-- <img :src="imgurl" alt="" class=" rounded-[2.5vw] w-[24vw] h-[24vw]" id="bgimg"> -->
+                    <canvas id="myCanvas" class="rounded-[2.5vw] w-[24vw] h-[24vw]"
+                        :class="[`w-[${width}px]`, `h-[${width}px]`]"></canvas>
                 </div>
                 <div class=" ml-[3vw]">
                     <div class="flex justify-between ">
                         <p class="w-[57vw] text-[4vw] text-[#fff] font-[500]">{{ tilte }}</p>
                         <span class="w-[5vw] h-[5vw] bg-[#fff] rounded-[50vw] flex items-center justify-center ml-[1.5vw]">
-                            <Icon icon="bytesize:chevron-bottom" color="#000" class="w-[2vw] h-[2vw]"/>
+                            <Icon icon="bytesize:chevron-bottom" color="#000" class="w-[2vw] h-[2vw]" />
                         </span>
                     </div>
-                    <div class="flex items-center">
+                    <div class="flex items-center text-[1.5vw]">
                         <div>
                             <img :src="userimg" alt="" class="w-[6vw] h-[6vw] rounded-[50%] mr-[2vw]">
                         </div>
                         <span class="mr-[1vw] text-[#d5ceb5]">{{ userName }}</span>
-                        <span class="w-[11vw] h-[4vw] rounded-[3vw] mr-[1vw] text-[#d5ceb5] flex items-center justify-center bg-[#fff]" >
-                            <Icon icon="ic:baseline-plus" color="#d5ceb5" class="w-[3vw] h-[3vw]"/>
+                        <span
+                            class="w-[11vw] h-[4vw] rounded-[3vw] mr-[1vw] text-[#d5ceb5] flex items-center justify-center" :style="{ backgroundColor: rgba }">
+                            <Icon icon="ic:baseline-plus" color="#d5ceb5" class="w-[3vw] h-[3vw]" />
                             关注
                         </span>
                     </div>
                 </div>
             </div>
-            <p class="w-[90vw] h-[4vw] my-[3vw] text_nowarp text-[#d5ceb5]">{{ this.userTag }}</p>
+            <p class="w-[90vw] my-[3vw] text_nowarp text-[#d5ceb5]">{{ this.userTag }}</p>
             <div class="flex justify-between items-center text-[3.5vw] text-[#fff] font-[550] mt-[2vw]">
-                <div class="flex items-center justify-center w-[29vw] h-[10vw] rounded-[5vw]   bg-[#fff]">
-                    <Icon icon="basil:forward-solid" color="white" class="w-[5vw] h-[5vw]"/>
+                <div class="flex items-center justify-center w-[29vw] h-[10vw] rounded-[5vw]" :style="{ backgroundColor: rgba }">
+                    <Icon icon="basil:forward-solid" color="white" class="w-[5vw] h-[5vw]" />
                     <span>{{ Forward }}</span>
                 </div>
-                <div class="flex items-center justify-center w-[29vw] h-[10vw] rounded-[5vw]  bg-[#fff]">
-                    <Icon icon="uis:comment-dots" color="white" class="w-[5vw] h-[5vw]"/>
+                <div class="flex items-center justify-center w-[29vw] h-[10vw] rounded-[5vw]" :style="{ backgroundColor: rgba }">
+                    <Icon icon="uis:comment-dots" color="white" class="w-[5vw] h-[5vw]" />
                     <span> {{ Count }} </span>
                 </div>
                 <div class="flex items-center justify-center w-[29vw] h-[10vw] rounded-[5vw] bg-[#ff363f]">
-                    <Icon icon="fluent:collections-add-20-filled" color="white" class="w-[5vw] h-[5vw]"/>
+                    <Icon icon="fluent:collections-add-20-filled" color="white" class="w-[5vw] h-[5vw]" />
                     {{ like }}
                 </div>
             </div>
         </header>
-        <section class=" w-screen rounded-t-[3vw]"></section>
+        <section class="w-screen rounded-[3vw] text-[3vw] pt-[5vw] pb-[5vw] px-[4vw]">
+            <div id="songListTop" class="flex items-center mb-[6.5vw] justify-between">
+                <div class=" flex justify-between items-center">
+                    <Icon icon="icon-park-solid:play" color="#fe3e31" class="w-[5vw] h-[5vw] mr-[4vw]" />
+                    <span class="font-[600] mr-[3vw]">播放全部</span>
+                    <span class="text-[#979795] text-[2vw]">({{ song.length }})</span>
+                </div>
+                <div class="flex w-[15vw]  justify-between items-center">
+                    <Icon icon="quill:download" color="#333331" class="w-[5vw] h-[5vw]" />
+                    <Icon icon="solar:list-check-linear" color="#333331" class="w-[5vw] h-[5vw]" />
+                </div>
+            </div>
+            <div>
+                <ul>
+                    <li class="flex text-[3vw] justify-between items-center my-[8vw]" v-for="(item,index) in song" :key="item.id">
+                        <div class="flex items-center">
+                            <span class="text-[#979795] mr-[5.75vw] ml-[1vw]">{{ index+1 }}</span>
+                            <div>
+                                <p class="text_nowarp">
+                                    <span>{{ item.name }}</span>
+                                    <span class="text-[#808080]" v-if="item.alia.length != 0"> {{ item.alia[0] }}</span>
+                                </p>
+                                <p class="text_nowarp text-[#808080] text-[2vw]" v-if="item.ar.length != 0">
+                                    <span v-for="name in item.ar" :key="name.id">
+                                        {{ name.name }}
+                                    </span>
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex w-[15vw] justify-between items-center">
+                            <Icon icon="radix-icons:video" color="#b3b3b3" class="w-[5vw] h-[5vw]"/>
+                            <Icon icon="ri:more-2-fill" color="#b3b3b3" class="w-[5vw] h-[5vw] " />
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </section>
     </div>
 </template>
 <script>
-import {fetchTrack,fetchSongUser} from '@/request/index'
-import ColorThief from 'colorthief'
+import { fetchTrack, fetchSongUser } from '@/request/index'
 export default {
-    data(){
+    data() {
         return {
-            lazy:true,
-            song:[],
-            imgurl:'',
-            tilte:'',
-            userimg:'',
-            userName:'',
-            userTag:'',
-            Forward:0,
-            Count:0,
-            like:0,
-            tags:[],
+            lazy: true,
+            song: [],
+            imgurl: '',
+            tilte: '',
+            userimg: '',
+            userName: '',
+            userTag: '',
+            Forward: 0,
+            Count: 0,
+            like: 0,
+            tags: [],
+            id: '',
+            width: 0,
+            rgb:'',
+            rgba:'',
         }
     },
     async created() {
-        // console.log(this.$route.query.id);
-        // console.log(this.$route.query.data);
-        this.imgurl = this.$route.query.data.uiElement.image.imageUrl;
-        this.tilte = this.$route.query.data.uiElement.mainTitle.title;
+        //传递的参数
+        this.id = this.$route.query.id;
+        const res = await fetchTrack(this.id)
+        const user = await fetchSongUser(this.id)
+        const image = new Image();
+        image.setAttribute('crossOrigin','anonymous');
+        Promise.all([res, user]).then(([song, user]) => {
+            this.song = song.data.songs
+            console.log(this.song);
+            //歌单名
+            this.tilte = user.data.playlist.name
+            //歌单封面
+            this.imgurl = user.data.playlist.coverImgUrl
+            const imageUrl = this.imgurl
+            image.src = imageUrl;
+            //用户名
+            this.userName = user.data.playlist.creator.nickname;
+            //头像
+            this.userimg = user.data.playlist.creator.avatarUrl;
+            //歌单简介
+            this.userTag = user.data.playlist.description;
+            //转发
+            this.Forward = user.data.playlist.shareCount;
+            //评论
+            this.Count = user.data.playlist.commentCount;
+            //搜藏
+            this.like = user.data.playlist.subscribedCount;
+            //tag
+            this.tags = user.data.playlist.tags;
+        }).catch((err) => console.log(`响应失败${err}`));
+        let that = this;
+        that.width = window.innerWidth * 0.24
+        const canvas = document.getElementById("myCanvas");
+        const context = canvas.getContext("2d");
+        window.addEventListener('resize', function () {
+            that.width = window.innerWidth * 0.24
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+        })
 
-        const res = await fetchTrack(this.$route.query.id).catch((err) => console.log(err));
-        const user = await fetchSongUser(this.$route.query.id).catch((err) => console.log(err));
-        this.song = res.data.songs
-        console.log(user.data.playlist.creator);
-        //用户名
-        this.userName = user.data.playlist.creator.nickname;
-        //头像
-        this.userimg =  user.data.playlist.creator.avatarUrl;
-        //歌单简介
-        this.userTag = user.data.playlist.description;
-        //转发
-        this.Forward =  user.data.playlist.shareCount;
-        //评论
-        this.Count = user.data.playlist.commentCount;
-        //搜藏
-        this.like = user.data.playlist.subscribedCount;
-        //tag
-        this.tags = user.data.playlist.tags;
-
-        // let colorThief = new ColorThief();
-        // const bgimg = document.querySelector("#bgimg")
-        // colorThief.getColor(bgimg);
-        // console.log(colorThief.getColor(bgimg));
+        image.onload = () => {
+            that.width = window.innerWidth * 0.24
+            context.drawImage(image, 0, 0, canvas.width, canvas.height);
+            const data = context.getImageData(0,0,canvas.width,canvas.height).data;
+            let arr = this.getMainColor(data).split(",").map(Number);
+            this.rgb = this.rgbaToHex(arr[0],arr[1],arr[2]);
+            this.rgba = '#ffffff4d'
+            console.log(this.rgb);
+        };
+    },
+    methods: {
+        getMainColor(data) {
+            const temp = {}
+            const len = data.length
+            let max = 0;
+            let color = ''
+            let i = 0
+            while (i < len) {
+                if (data[i + 3] !== 0) {
+                    const k = `${data[i]}, ${data[i + 1]}, ${data[i + 2]}, ${(data[i + 3] / 255)}`
+                    temp[k] = temp[k] ? temp[k] + 1 : 1
+                    if (temp[k] > max) {
+                        max = temp[k]
+                        color = k
+                    }
+                }
+                i += 4
+            }
+            return color
+        },
+        rgbaToHex(r, g, b) {
+            const red = r.toString(16).padStart(2, '0');
+            const green = g.toString(16).padStart(2, '0');
+            const blue = b.toString(16).padStart(2, '0');
+            return `#${red}${green}${blue}`;
+        },
     },
 }
 </script>
@@ -109,6 +200,7 @@ export default {
 .text_nowarp {
     white-space: nowrap;
     overflow: hidden;
-    text-overflow: ellipsis; /* 如果需要在溢出时显示省略号 */
+    text-overflow: ellipsis;
+    /* 如果需要在溢出时显示省略号 */
 }
 </style>

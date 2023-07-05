@@ -124,21 +124,25 @@ export default {
       this.page.push(this.propName[key].creativeId)
       console.log(this.page);
     }
-
   },
   methods: {
     getSonglist(index) {
       // ,this.propName[index].uiElement.image.imageUrl,this.propName[index].uiElement.mainTitle.title
-      console.log(this.propName[index]);
-      const data = this.propName[index];
-      const id = encodeURIComponent(this.page[index]);
-      this.$router.push({
-        path: '/SongList',
-        query: {
-          id,data
+      if(this.page.length != 0){
+        console.log(this.propName[index]);
+        const id = encodeURIComponent(this.page[index]);
+        if(id != undefined){
+          this.$router.push({
+          path: '/SongList',
+          query: {
+              id
+            }
+          });
         }
-      });
+    }else{
+      getSonglist(index);
     }
+      }
   }
 }
 </script>

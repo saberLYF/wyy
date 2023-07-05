@@ -22,19 +22,21 @@
                 </div>
               </transition>
               <transition name="abc">
-                  <div v-if="!show" class="absolute">
-                    <img :src="imga[y]" alt="" class="w-[30vw] h-[30vw]  rounded-[1.5vw]">
-                  </div>
+                <div v-if="!show" class="absolute">
+                  <img :src="imga[y]" alt="" class="w-[30vw] h-[30vw]  rounded-[1.5vw]">
+                </div>
               </transition>
             </div>
             <transition name="abcd">
               <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ names[x] }}</p>
             </transition>
           </li>
-          <li class="flex flex-col items-center mr-[5vw] h-[35vw] relative" v-for="(item,index) in propName" :key="item.id" @click="getSonglist(index)">
+          <li class="flex flex-col items-center mr-[5vw] h-[35vw] relative" v-for="(item, index) in propName"
+            :key="item.id" @click="getSonglist(index)">
             <img :src="item.uiElement.image.imageUrl" alt="" class="w-[35vw] h-[35vw] rounded-[1.5vw] mt-[2vw] z-[1]">
             <span class="w-[25vw] flex h-[3vw] rounded-[4vw] absolute top-[1.2vw] dark:bg-[#27272f] blg z-[0]"></span>
-            <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ item.uiElement.mainTitle.title }}</p>
+            <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ item.uiElement.mainTitle.title }}
+            </p>
             <Icon icon="ph:play-fill" color="white" width="36" height="36"
               class="absolute w-[4vw] h-[4vw] bottom-[5vw] right-[1.5vw] mr-[2vw] z-[2]" />
             <span class="absolute text-[#fff] text-[2vw] flex right-[2vw] top-[3vw] items-center font-bold z-[2]">
@@ -77,7 +79,7 @@
 <script>
 import { fetchPersonalized } from "@/request/index.js"
 export default {
-  props: ['propName','col'],
+  props: ['propName', 'col'],
   data() {
     return {
       menu: false,
@@ -89,12 +91,13 @@ export default {
       n: 0,
       y: 1,
       x: 0,
-      page:[],
+      page: [],
     }
   },
   async created() {
     const res = await fetchPersonalized().catch((err) => console.log(err));
     this.Personalized = res.data.result;
+    console.log(this.propName);
     for (let i = 0; i < 3; i++) {
       this.names.push(this.Personalized[i].name);
       this.img.push(this.Personalized[i].picUrl);
@@ -102,32 +105,38 @@ export default {
     for (let i = 0; i < 3; i++) {
       this.imga.push(this.img[i])
     }
-    setInterval(()=>{
+    setInterval(() => {
       this.show = !this.show
-      this.x >= 2 ? this.x = 0 : this.x ++;
-      if(this.show == true){
+      this.x >= 2 ? this.x = 0 : this.x++;
+      if (this.show == true) {
         this.n++;
-        if(this.n >= 3){
+        if (this.n >= 3) {
           this.n = 0
         }
-      }else{
+      } else {
         this.y++
-        if(this.y >= 3){
+        if (this.y >= 3) {
           this.y = 0
         }
       }
-      }, 4000)
-      for(let key in this.propName){
-        this.page.push(this.propName[key].creativeId)
-      }
-    console.log(this.page);
+    }, 4000)
+    for (let key in this.propName) {
+      this.page.push(this.propName[key].creativeId)
+      console.log(this.page);
+    }
+
   },
-  methods:{
-    getSonglist(index){
-      console.log(this.page[index]);
+  methods: {
+    getSonglist(index) {
+      // ,this.propName[index].uiElement.image.imageUrl,this.propName[index].uiElement.mainTitle.title
+      console.log(this.propName[index]);
+      const data = this.propName[index];
+      const id = encodeURIComponent(this.page[index]);
       this.$router.push({
         path: '/SongList',
-        query: this.page[index]
+        query: {
+          id,data
+        }
       });
     }
   }
@@ -177,18 +186,16 @@ export default {
 
 .abcd-enter-to,
 .abcd-leave {
-    opacity: 1;
+  opacity: 1;
 }
 
 .abcd-enter-active,
 .abcd-leave-active {
-    transition: opacity .75s;
+  transition: opacity .75s;
 }
 
 .abcd-leave-to,
 .abcd-enter {
-    opacity: 0;
+  opacity: 0;
 }
-
-
 </style>

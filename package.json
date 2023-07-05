@@ -14,10 +14,12 @@
   "dependencies": {
     "axios": "^1.4.0",
     "better-scroll": "^2.5.1",
+    "colorthief": "^2.4.0",
     "element-ui": "^2.15.13",
     "eslint-import-resolver-webpack": "^0.13.2",
     "jquery": "^3.7.0",
     "lodash": "^4.17.21",
+    "storejs": "^2.0.5",
     "swiper": "^9.4.1",
     "vant": "^2.12.54",
     "vue-router": "^3.3.4"
@@ -35,6 +37,7 @@
     "ajv": "^7.2.4",
     "autoprefixer": "^10.4.14",
     "commitizen": "^4.3.0",
+    "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^6.8.1",
     "cz-conventional-changelog": "^3.3.0",

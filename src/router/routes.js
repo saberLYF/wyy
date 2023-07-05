@@ -19,4 +19,8 @@ export default [
         path: '/SongList',
         component: SongList,
       },
+      {
+        path:'/Login',
+        component:()=>import('@/views/Login.vue')
+      },
   ];

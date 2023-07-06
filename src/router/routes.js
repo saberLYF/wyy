@@ -5,7 +5,7 @@ export default [
     // 路径重定向
     {
       path: '/',
-      redirect: '/IndexView',
+      redirect: '/Login',
     },
     {
       path: '/IndexView',

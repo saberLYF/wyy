@@ -1,5 +1,5 @@
 <template>
-     <div class="p-[1.5vw] mt-[12vw] dark:text-[#fff] dark:bg-gray-900">
+     <div class="p-[1.5vw] mt-[11vw] dark:text-[#fff] dark:bg-gray-900">
         <van-swipe class="my-swipe rounded-[5vw]" :autoplay="3000" indicator-color="white">
           <van-swipe-item v-for="item in banners" :key="item.id">
             <img :src="item.pic" alt="">

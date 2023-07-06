@@ -95,16 +95,22 @@ export default {
     }
   },
   async created() {
-    const res = await fetchPersonalized().catch((err) => console.log(err));
-    this.Personalized = res.data.result;
-    console.log(this.propName);
-    for (let i = 0; i < 3; i++) {
-      this.names.push(this.Personalized[i].name);
-      this.img.push(this.Personalized[i].picUrl);
-    }
-    for (let i = 0; i < 3; i++) {
-      this.imga.push(this.img[i])
-    }
+    const res = await fetchPersonalized()
+    Promise.all([res]).then(([res]) => {
+      this.Personalized = res.data.result;
+      for (let key in this.propName) {
+        this.page.push(this.propName[key].creativeId)
+        console.log(this.page);
+      }
+      for (let i = 0; i < 3; i++) {
+        this.names.push(this.Personalized[i].name);
+        this.img.push(this.Personalized[i].picUrl);
+      }
+      for (let i = 0; i < 3; i++) {
+        this.imga.push(this.img[i])
+      }
+    }).catch((err) => console.log(err));
+
     setInterval(() => {
       this.show = !this.show
       this.x >= 2 ? this.x = 0 : this.x++;
@@ -120,29 +126,28 @@ export default {
         }
       }
     }, 4000)
-    for (let key in this.propName) {
-      this.page.push(this.propName[key].creativeId)
-      console.log(this.page);
-    }
+  },
+  watch: {
+    // Personalized(newVal) {
+    //   console.log(newVal);
+
+    // }
   },
   methods: {
     getSonglist(index) {
-      // ,this.propName[index].uiElement.image.imageUrl,this.propName[index].uiElement.mainTitle.title
-      if(this.page.length != 0){
+      console.log(111);
+      if (this.page.length != 0) {
         console.log(this.propName[index]);
         const id = encodeURIComponent(this.page[index]);
-        if(id != undefined){
-          this.$router.push({
+
+        this.$router.push({
           path: '/SongList',
           query: {
-              id
-            }
-          });
-        }
-    }else{
-      getSonglist(index);
-    }
+            id
+          }
+        });
       }
+    }
   }
 }
 </script>

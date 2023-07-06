@@ -32,7 +32,7 @@
 // Vue.use(Vant);
 import 'vant/lib/index.css';
 import _ from "lodash";
-import { fetchHomePage, fetchHomeDragonBall } from "@/request/index";
+import { fetchHomePage, fetchHomeDragonBall,getUserAccount, getUserDetail } from "@/request/index";
 export default {
   components: {
     bannerView: () => import('@/components/bannerView.vue'),
@@ -69,6 +69,10 @@ export default {
     }
   },
   async created() {
+    const nameres = await getUserAccount();
+    console.log(nameres);
+    const detail = await getUserDetail(nameres.data.profile.userId);
+    console.log(detail);
     const res = await fetchHomePage().catch((err) => console.log(err));
     this.bannerss = res.data.data.blocks[0].extInfo.banners;
     this.chartss = res.data.data.blocks[3];

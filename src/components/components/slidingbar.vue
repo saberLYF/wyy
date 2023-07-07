@@ -35,7 +35,10 @@ export default {
         },
         bgcolor:{
             type:String,
-        }
+        },
+        user:{
+            type:Object,
+        },
     },
     data() {
         return {

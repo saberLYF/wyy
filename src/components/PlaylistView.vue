@@ -1,7 +1,7 @@
 <template>
   <div class="w-screen overflow-hidden bg-[#f8f9fd] dark:bg-gray-900 ">
-    <h1 class="flex items-center font-bold font-mono text-[2.5vw] p-[1.5vw] justify-between">
-      <span class="flex items-center text-[3.5vw]">
+    <h1 class="flex items-center font-bold font-mono text-[4vw] p-[1.5vw] justify-between">
+      <span class="flex items-center text-[4vw]">
         推荐歌单
         <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw] " />
       </span>
@@ -79,7 +79,7 @@
 <script>
 import { fetchPersonalized } from "@/request/index.js"
 export default {
-  props: ['propName', 'col'],
+  props: ['propName', 'col','pages'],
   data() {
     return {
       menu: false,
@@ -92,16 +92,12 @@ export default {
       y: 1,
       x: 0,
       page: [],
+      flag:false
     }
   },
   async created() {
     const res = await fetchPersonalized()
-    Promise.all([res]).then(([res]) => {
       this.Personalized = res.data.result;
-      for (let key in this.propName) {
-        this.page.push(this.propName[key].creativeId)
-        console.log(this.page);
-      }
       for (let i = 0; i < 3; i++) {
         this.names.push(this.Personalized[i].name);
         this.img.push(this.Personalized[i].picUrl);
@@ -109,7 +105,7 @@ export default {
       for (let i = 0; i < 3; i++) {
         this.imga.push(this.img[i])
       }
-    }).catch((err) => console.log(err));
+      this.flag=true
 
     setInterval(() => {
       this.show = !this.show
@@ -136,16 +132,18 @@ export default {
   methods: {
     getSonglist(index) {
       console.log(111);
-      if (this.page.length != 0) {
-        console.log(this.propName[index]);
-        const id = encodeURIComponent(this.page[index]);
-
+      console.log(index);
+      if (this.flag && index!=undefined) {
+        console.log(this.pages);
+        const id = encodeURIComponent(this.pages[index]);
         this.$router.push({
           path: '/SongList',
           query: {
             id
           }
         });
+      }else{
+        console.log('未访问到数据');
       }
     }
   }

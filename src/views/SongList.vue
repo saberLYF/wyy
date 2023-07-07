@@ -16,8 +16,7 @@
                                 <!-- <span> -->
                                 <!-- 文字较短时，通过设置 scrollable 属性开启滚动播放 -->
                                 <div v-else class="w-[65vw]">
-                                    <van-notice-bar scrollable :text="tilte" :background="rgb" color="#fff"
-                                        class="text-[4vw]" />
+                                    <van-notice-bar scrollable :text="tilte" :background="rgb" color="#fff" />
                                 </div>
                                 <!-- </span> -->
                             </div>

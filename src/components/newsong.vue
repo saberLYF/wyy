@@ -1,8 +1,8 @@
 <template>
     <div class="w-screen  bg-[#f8f9fd]  dark:bg-gray-900">
-      <h1 class="flex items-center p-[1.5vw] font-bold font-mono text-[3.5vw] justify-between">
-        <span class="flex items-center text-[#3e465b] dark:text-[#fff]" v-if="customMade.length != 0">
-          {{ customMade.uiElement.subTitle.title }}/{{ customMade.creatives[4].uiElement.mainTitle.title }}
+      <h1 class="flex items-center p-[1.5vw] font-bold font-mono text-[4vw] justify-between">
+        <span class="flex items-center text-[#3e465b] dark:text-[#fff]">
+          新歌新碟
           <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]"/>
         </span>
         <span @click="menu = !menu">
@@ -17,8 +17,8 @@
                 <img :src="items.uiElement.image.imageUrl" alt="" class="w-[15vw] h-[15vw] rounded-[2vw]">
                 <div class="flex ml-[3vw] flex-col justify-center ">
                   <p class="text-[4vw] text-[#3e465b] dark:text-[#fff]">{{ items.uiElement.mainTitle.title }}</p>
-                  <p class="text-[1.5vw]  text-[#828a97] dark:text-[#616065]" v-if="items.uiElement.subTitle != undefined">{{ items.uiElement.subTitle.title }} - {{
-                    items.resourceExtInfo.artists[0].name }}</p>
+                  <p class="text-[1.5vw]  text-[#828a97] dark:text-[#616065]">{{ items.uiElement.subTitle.title!=undefined ? items.uiElement.subTitle.title : ''  }} - {{
+                    items.resourceExtInfo.artists[0].name==undefined ? '' : items.resourceExtInfo.artists[0].name }}</p>
                 </div>
               </li>
             </ul>

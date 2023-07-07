@@ -1,7 +1,7 @@
 <template>
      <div class="w-screen  bg-[#f8f9fd] dark:bg-gray-900">
       <h1 class="flex items-center  p-[1.5vw] font-bold font-mono text-[2.5vw] justify-between">
-        <span class="flex items-center text-[3.5vw]">
+        <span class="flex items-center text-[4vw]">
           音乐日历
           <Icon icon="mingcute:right-fill" color="#51596c" width="36" height="36" class="w-[3vw] h-[3vw]" />
         </span>

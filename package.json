@@ -12,6 +12,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@vant/area-data": "^1.4.1",
     "axios": "^1.4.0",
     "better-scroll": "^2.5.1",
     "colorthief": "^2.4.0",
@@ -45,6 +46,7 @@
     "ajv": "^7.2.4",
     "autoprefixer": "^10.4.14",
     "babel-loader": "^9.1.2",
+    "babel-plugin-import": "^1.13.6",
     "commitizen": "^4.3.0",
     "copy-webpack-plugin": "^11.0.0",
     "cross-env": "^7.0.3",

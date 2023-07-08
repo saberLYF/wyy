@@ -44,4 +44,9 @@ export const checkQrStatus = (key) => http.get('/login/qr/check',{params: {
 
 export const getUserAccount = () => http.get('/user/account')
 
+export const getUserPlaylist = (uid) => http.get('/user/playlist',{params:{uid}})
+
 export const getUserDetail = (uid) => http.get('/user/detail',{params:{uid}})
+export const getUserBinding = (uid) => http.get('/user/binding',{params:{uid}})
+//历史评论
+export const getUserHistory = (uid) => http.get('/user/comment/history',{params:{uid}})

@@ -1,51 +1,27 @@
 <template>
-    <div class="dark:bg-gray-900">
+    <div class="dark:bg-gray-900 relative">
         <div
-            :class="['w-[100vw]', 'flex', 'justify-between', ' p-[1.5vw]','fixed', 'top-0', 'z-10', header && head == true ? ['gradieninp','gradientColorStops','dark:bg-[#1b1b23]'] : ['bg-[#f8f9fd]','dark:bg-[#1b1b23]']]"
-            class="dark:bg-[#1b1b23]"
-            >
+            :class="['w-[100vw]', 'flex', 'justify-between', ' p-[1.5vw]','fixed', 'top-0', 'z-10', icon==true ? 'dark:bg-[#1b1b23]':'gradieninp']"
+            class="dark:bg-[#1b1b23]">
             <Icon icon="ic:round-menu" color="#ccc" width="36" height="36" class="w-[8vw] h-[8vw]"
                 @click.native="shows = !shows" />
             <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
                 class="w-[6vw] h-[6vw] mr-[-15vw] mt-[1.75vw] z-[1]" />
             <input type="text"
-                :class="['w-[75vw]','dark:bg-[#3b343b]','h-[9vw]', 'rounded-[5vw]', 'outline-none', 'border border-solid', 'border-gray-400', 'px-[10vw]', header && head == true ? ['gradientColorStops','dark:bg-[#1b1b23]'] : ['bg-[#f8f9fd]','dark:bg-[#1b1b23]'], 'text-[3.5vw]']"
+                :class="['w-[75vw]','dark:bg-[#3b343b]','h-[9vw]', 'rounded-[5vw]', 'outline-none', 'border border-solid', icon==true ? 'dark:bg-[#1b1b23]':'gradieninp','border-gray-400', 'px-[10vw]','dark:bg-[#1b1b23]','text-[3.5vw]']"
                 :placeholder="SearchDefault.showKeyword" v-model="userSearchKeywords"
                 @click="$router.push('./SearchView')"
                 >
             <Icon icon="tabler:scan" color="#ccc" class="w-[6vw] h-[6vw] ml-[-15vw] mt-[1.75vw]" />
             <Icon icon="ph:microphone-light" color="#ccc" width="36" height="36" class="w-[8vw] h-[8vw]" />
         </div>
-        <!-- <van-popup v-model="show" position="right" :style="{ height: '100%', width: '100%' }" class="dark:bg-[#271d26]">
-            <div class="flex justify-between items-center p-[3vw]">
-                <Icon icon="icon-park-outline:left" color="#ccc" width="36" height="36" class="w-[6vw] h-[6vw]  z-[1]"
-                    @click.native="show = false" />
-                    @focus="show = true"
-                <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
-                    class="w-[6vw] h-[6vw] mr-[-13vw] mt-[.75vw] z-[1]" />
-                <input type="text"
-                    :class="['w-[75vw]','dark:bg-[#3b343b]','dark:text-[#ffffff]', 'h-[9vw]', 'rounded-[5vw]', 'text-[#002]', 'outline-none', 'border border-solid', 'border-gray-400', 'px-[10vw]', header  ? ['gradientColorStops','dark:bg-[#1b1b23]'] : 'bg-[#f8f9fd]', 'text-[3.5vw]']"
-                    :placeholder="SearchDefault.showKeyword" v-model="userSearchKeywords">
-                <span class="text-[#ccc] text-[4vw]">搜索</span>
-            </div>
-            <template v-if="userSearchKeywords != ''">
-                <div class="p-[3vw]" v-for="item in keywords" :key="item.id">
-                    <ul>
-                        <li class="flex   items-center">
-                            <Icon icon="iconamoon:search-light" color="#ccc" width="36" height="36"
-                                class="w-[4vw] h-[4vw] z-[1]" />
-                            <p class="text-[2vw]">{{ item.name }}</p>
-                        </li>
-                    </ul>
-                </div>
-            </template>
-        </van-popup> -->
-        <Drawer :title="'标题'" :show.sync="shows" :str="'left'" :bgcolor="'#'+'f6f6f6'">
+        <Drawer v-if="userN" :title="'标题'" :show.sync="shows" :str="'left'" :bgcolor="'#'+'f6f6f6'" >
             <template #main>
                 <header class="flex  w-[69vw] pb-[2vw] justify-between items-center">
-                    <span class="text-[3.5vw] text-[#303030] flex justify-between items-center dark:text-[#fff]">
-                        <Icon icon="ph:user-circle-fill" color="#f8dada" class="w-[6vw] h-[6vw] mr-[2vw]" />
-                        立即登录
+                    <span class="text-[3.5vw] text-[#303030] flex justify-between items-center dark:text-[#fff]" @click="login">
+                        <Icon v-if="userName == [] " icon="ph:user-circle-fill" color="#f8dada" class="w-[6vw] h-[6vw] mr-[2vw]" />
+                        <img v-else :src="userName.profile.avatarUrl" alt="" class="w-[6vw] h-[6vw] mr-[2vw]">
+                        {{ userName==[] ? '立即登录' : userName.profile.nickname }}
                         <Icon icon="formkit:right" color="#575757" width="36" height="36" class="w-[4.5vw] h-[4.5vw]" />
                     </span>
                     <span>
@@ -75,9 +51,9 @@
                         </div>
                         <div class="flex justify-between mb-[1.25vw]">
                             <p class="text-[#988c8e] text-[2.8vw]  font-medium flex items-center">专享优惠！黑胶VIP仅￥0.03/天！</p>
-                            <div class="bg-[#dc4510]  text-[#fff] text-[1vw] flex w-[5.75vw] h-[6vw]  p-[.5vw] flex-wrap justify-center font-bold rounded-[1vw]">
-                               <p>受邀</p>
-                                <p>专享</p>
+                            <div class="bg-[#dc4510]  text-[#fff]  flex w-[7vw] h-[7vw]  p-[.25vw] flex-wrap items-center justify-center font-bold rounded-[1vw]">
+                               <p class="text-[1vw]">受邀</p>
+                                <p class="text-[1vw]">专享</p>
                             </div>
                         </div>
                     </div>
@@ -351,7 +327,7 @@
                         </ul>
                     </div>
                         <div  class=" p-[3vw] mb-[20vw] pr-0 bg-[#fff] mt-[7.5vw] rounded-[3vw] dark:bg-[#2c2c2c]">
-                            <p class="text-center text-[#f33f4b] text-[3.5vw]">关闭云音乐</p>
+                            <p class="text-center text-[#f33f4b] text-[3.5vw]" @click="openConfirmDialog">关闭云音乐</p>
                         </div>
                 </section>
             </template>
@@ -359,7 +335,11 @@
     </div>
 </template>
 <script>
-import { fetchSearchSuggest, fetchSearchDefault } from "@/request/index"
+import Vue from 'vue';
+import { Dialog } from 'vant';
+// 全局注册
+Vue.use(Dialog);
+import { fetchSearchSuggest, fetchSearchDefault,getUserDetail,getUserAccount } from "@/request/index"
 export default {
     props: ['cols'],
     props:{
@@ -379,6 +359,8 @@ export default {
             icon:false,
             col:"#383838",
             head:true,
+            userName:[],
+            userN:false,
         }
     },
     mounted() {
@@ -396,6 +378,15 @@ export default {
     async created() {
         const Default = await fetchSearchDefault().catch((err) => console.log(err));
         this.SearchDefault = Default.data.data;
+
+        const nameres = await getUserAccount();
+        const detail = await getUserDetail(nameres.data.profile.userId);
+
+        this.users = nameres.data.profile.userId;
+        this.userName = detail.data
+        console.log(this.userName);
+
+        this.userN = true
     },
     //监控某个响应数据发生变化之后执行指令的逻辑
     //methods、beforeCreate、created、watch中的this指向vm
@@ -424,9 +415,35 @@ export default {
             this.cols= this.col
             this.$emit('clicks',this.cols);
             console.log(this.col);
-        }
-    }
+        },
+        openConfirmDialog() {
+            Dialog.confirm({
+                message: '确定要退出当前的账号吗',
+            })
+                .then(() => {
+                    // on confirm
+                    // console.log('Confirmed');
+                    // localStorage.clear(); // 清除 localStorage
+                    // 获取 __m__cookie 值
+                    const mCookie = localStorage.getItem("__m__cookie");
 
+                    // 移除 __m__cookie 键
+                    localStorage.removeItem("__m__cookie");
+
+                    this.$router.push('/Login')
+
+                })
+                .catch(() => {
+                    // on cancel
+                    // console.log('Cancelled');
+                });
+        },
+        login(){
+            this.$router.push({
+                path: '/Login',
+            });
+        }
+    },
 }
 </script>
 <style>.bg_3b {

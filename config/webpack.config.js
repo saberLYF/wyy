@@ -3,6 +3,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const WebpackBar = require('webpackbar');
 const path = require('path');
 const { VueLoaderPlugin } = require('vue-loader');
+const CopyPlugin = require('copy-webpack-plugin');
 module.exports = {
   entry: './src/index.js',
   devtool: 'source-map',
@@ -45,6 +46,12 @@ module.exports = {
         test: /\.(woff | eot | ttf | otf | svg)$/,
         type: 'asset/resource',
       },
+      {
+        test: /\.jsx?$/,
+        use: {
+          loader: 'babel-loader',
+        },
+      },
     ],
   },
   mode: process.env.NODE_ENV,
@@ -53,6 +60,7 @@ module.exports = {
       vue: 'vue/dist/vue.esm.js',
       '@': path.resolve(__dirname, '../src'),
     },
+    extensions:['.js','.json','.jsx']
   },
   // externals: {
   //   vue: 'Vue',
@@ -88,5 +96,10 @@ module.exports = {
       },
     }),
     new VueLoaderPlugin(),
+    new CopyPlugin({
+      patterns:[
+        {from:'./src/static',to:'./static'}
+      ]
+    }),
   ],
 };

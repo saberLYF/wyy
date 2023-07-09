@@ -1,9 +1,9 @@
 <template>
   <div :class="{ 'dark': switchs }" id="wrap">
     <div class="w-[100vw] overflow-hidden bg-white text-[#000] relative dark:bg-gray-900 dark:text-[#fff]">
-      <div class="gradienPink">
+      <div class="gradienPink relative">
         <!-- 头部搜索框 -->
-        <headinput :cols.sync="cor" @clicks="gets">
+        <headinput  :cols.sync="cor" @clicks="gets">
           <template #val>
             <v-switch v-model="switchs" class="mr-[3vw]"></v-switch>
           </template>
@@ -14,7 +14,7 @@
       <!-- 菜单栏 -->
       <menuView :menu="menus" />
       <!-- 推荐歌单 -->
-      <playlistView :propName="recommends" :col="cor" />
+      <playlistView :propName="recommends" :col="cor" :pages="page"/>
       <!-- 新歌新碟-->
       <newsong :customMade="customMades" :col="cor"></newsong>
       <!-- 排行榜 -->
@@ -32,7 +32,7 @@
 // Vue.use(Vant);
 import 'vant/lib/index.css';
 import _ from "lodash";
-import { fetchHomePage, fetchHomeDragonBall } from "@/request/index";
+import { fetchHomePage, fetchHomeDragonBall} from "@/request/index";
 export default {
   components: {
     bannerView: () => import('@/components/bannerView.vue'),
@@ -56,6 +56,8 @@ export default {
       chartss: [],
       customMades: [],
       recommends: [],
+      page:[],
+      users:[],
     };
   },
   methods: {
@@ -69,10 +71,19 @@ export default {
   },
   async created() {
     const res = await fetchHomePage().catch((err) => console.log(err));
+    //轮播
     this.bannerss = res.data.data.blocks[0].extInfo.banners;
+    //排行
     this.chartss = res.data.data.blocks[3];
-    this.customMades = res.data.data.blocks[5];
+    //新歌
+    this.customMades = res.data.data.blocks[2];
+    //推荐歌单
     this.recommends = res.data.data.blocks[1].creatives;
+
+    for (let key in this.recommends) {
+      this.page.push(this.recommends[key].creativeId)
+    }
+
     const ress = await fetchHomeDragonBall().catch((err) => console.log(err));
     this.menus = ress.data.data;
   },

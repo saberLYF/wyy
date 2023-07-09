@@ -1,10 +1,11 @@
 import IndexView from '@/views/IndexView.vue'
 import SearchView from '@/views/SearchView.vue'
+import SongList from '@/views/SongList.vue'
 export default [
     // 路径重定向
     {
       path: '/',
-      redirect: '/IndexView',
+      redirect: '/userSet',
     },
     {
       path: '/IndexView',
@@ -13,5 +14,17 @@ export default [
     {
         path: '/SearchView',
         component: SearchView,
+      },
+      {
+        path: '/SongList',
+        component: SongList,
+      },
+      {
+        path:'/Login',
+        component:()=>import('@/views/Login.vue')
+      },
+      {
+        path:'/userSet',
+        component:()=>import('@/views/userSet')
       },
   ];

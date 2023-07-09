@@ -1,16 +1,17 @@
 import styled from 'styled-components-vue'
 import Vue from 'vue';
-import { Tab, Tabs, Area } from 'vant';
+import { Tab, Tabs, Area,Popup  } from 'vant';
 import { areaList } from '@vant/area-data';
-import { getUserAccount, getUserDetail, getUserBinding, getUserPlaylist,getUserHistory } from '@/request/index'
+import { getUserAccount, getUserDetail, getUserBinding, getUserPlaylist,getUserHistory,getSong } from '@/request/index'
+import { forEach } from 'lodash';
+import '@/views/css/userSet.less'
 Vue.use(Area);
 Vue.use(Tab);
 Vue.use(Tabs);
+Vue.use(Popup);
 //组件
-// const Tabmy = styled(Tab)`
-//     width:7vw;
-//     font-size:3vw;
-//     font-weight: 550;
+// const Tabmy = styled(Popup)`
+    
 // `
 // 头部大图盒子
 const Wrap = styled.div`
@@ -54,19 +55,24 @@ const Card = styled.div`
 
 export default {
     render() {
-        return <div class=" w-screen relative overflow-hidden  bg-[#f5f5f5]">
-            <header class="w-screen p-[4vw] fixed top-0 z-[1]">
+        return <div class=" w-screen relative overflow-hidden  bg-[#f5f5f5] pb-[8vw]">
+            <header class="w-screen h-[13.5vw] p-[4vw] fixed top-0 z-[100]" id='head'>
                 <div class="flex justify-between items-center ">
-                    <Icon icon="ph:arrow-left-light" color="white" class="w-[5vw] h-[5vw]" />
-                    <Icon icon="ri:more-2-fill" color="#fff" class="w-[5vw] h-[5vw] " />
+                    <div class="flex items-center">
+                        <span onClick={this.toIndex}>
+                            <Icon icon="ph:arrow-left-light" color={this.color} class="w-[5vw] h-[5vw] mr-[2vw]"/>
+                        </span>
+                        <span class="text-[3.5vw] font-[700]">{this.name}</span>
+                    </div>
+                    <Icon icon="ri:more-2-fill" color={this.color} class="w-[5vw] h-[5vw] " />
                 </div>
             </header>
             {this.isLoading == true ? (
                 <Wrap class="bg-[#baaa8c] h-[50vw] flex justify-center items-start p-[4vw] relative "
                     backgroundUrl={this.user.profile.backgroundUrl == undefined ? '' : this.user.profile.backgroundUrl}
                 >
-                    <div class="flex justify-between items-center  w-[18vw] z-[1]">
-                        <span class="text-[1.5vw] h-[4vw] px-[1vw] rounded-[3vw] flex justify-center items-center bg-[#fff] scale-90">照片墙</span>
+                    <div class="flex justify-between items-center z-[1] w-[20svw]">
+                        <span class="text-[2vw] px-[1.25vw] py-[.5vw] rounded-[3vw] flex justify-center items-center bg-[#fff] scale-90">照片墙</span>
                         <span class="rounded-[50%] w-[3vw] h-[3vw] bg-[#ddd9d0]"></span>
                         <span class="rounded-[50%] w-[2vw] h-[2vw] bg-[#ddd9d0]"></span>
                     </div>
@@ -78,8 +84,8 @@ export default {
             {this.isLoading == true ? (
                 <Card mt="-7vw">
                     <div class="flex justify-center items-center flex-col">
-                        <div class="w-[17vw] h-[17vw] rounded-[50%] mt-[-10vw]" style={{ backgroundImage: `url(${this.user.profile.avatarUrl})`, backgroundSize: '100%', backgroundRepeat: "no-repeat" }}></div>
-                        <p class="text-[5vw] font-[700] mt-[3vw] mb-[4vw]">{this.user.profile.nickname}</p>
+                        <div class="w-[17vw] h-[17vw] rounded-[50%] mt-[-10vw]" id="userImg" style={{ backgroundImage: `url(${this.user.profile.avatarUrl})`, backgroundSize: '100%', backgroundRepeat: "no-repeat"}}></div>
+                        <p class="text-[5vw] font-[700] mt-[3vw] mb-[4vw]" id='userName'>{this.user.profile.nickname}</p>
                         <p class="text-[2.5vw] font-[550] text-[#7b7b7b] mb-[4vw] flex justify-center items-center">
                             {this.detail.profile.follows} 关注
                             <span class="border-solid h-[3vw] w-[.05vw] border-[.05vw] border-[#ccccccb3] mx-[3vw]"></span>
@@ -107,11 +113,11 @@ export default {
                         </div>
 
                         <div class="w-[100%] flex justify-center items-center mt-[3vw]">
-                            <div class="text-[2.5vw] px-[4vw] py-[1.5vw] font-[600] rounded-[5vw] border-[#ccc] border-[.2vw] border-solid">
+                            <div class="text-[2.5vw] px-[4vw] py-[1.5vw] font-[600] rounded-[5vw] border-[#ccc] border-[.2vw] border-solid" onclick={this.shows}>
                                 编辑资料
                             </div>
-                            <div class="p-[2.75vw] ml-[1.5vw] rounded-[50vw] border-[#ccc] border-[.2vw] border-solid">
-                                <Icon icon="bytesize:chevron-bottom" class="w-[2.5vw] h-[2.5vw]" />
+                            <div class="p-[2vw] ml-[1.5vw] rounded-[50vw] border-[#ccc] border-[.2vw] border-solid">
+                                <Icon icon="bytesize:chevron-bottom" class="w-[2.25vw] h-[2.25vw]" />
                             </div>
                         </div>
                     </div>
@@ -194,7 +200,7 @@ export default {
                 <Card mt="3vw">
                     <h1 class="text-[4vw] font-black text-[#333333]">创建的歌单</h1>
                     <div class="w-[100%] flex flex-col">
-                        {this.playlist.playlist.map((item, index) => (
+                        {this.playlist.playlist.map((item,index) => (
                             index !== 0 ? (
                                 <div class="relative flex items-center my-[3vw]">
                                     <img src={item.coverImgUrl} alt="" class="w-[12vw] h-[12vw] rounded-[2vw] border-[.05vw] border-solid" />
@@ -211,14 +217,130 @@ export default {
 
             {this.isLoading == true ? (
                 <Card mt="3vw">
-                    <div class="flex items-center justify-between">
+                    <div class="flex items-center justify-between mb-[4vw]">
                         <h1 class="text-[4vw] font-black text-[#333333] flex  items-center">我的评论<span class="text-[#969696] text-[2.5vw] font-[500] ml-[1vw]">({this.history.commentCount})</span></h1>
                         <Icon icon="subway:lock-1" color="#b1b1ae" class="w-[3.5vw] h-[3.5vw]"/>
                     </div>
-                    {/* {this.history.comments.map((item) => (
-
-                    ))} */}
+                    {this.history.comments.map((item,index) => (
+                        <div class="flex flex-col ">
+                            <div class="flex justify-between items-center">
+                                <div class="flex justify-between items-center">
+                                    <img src={this.song[index].al.picUrl} alt="" class="w-[6vw] h-[6vw] rounded-[2vw]"/>
+                                    <p class="text-[2.5vw] text-[#9f9f9f] ml-[2vw]">
+                                        ⌈{this.song[index].name}⌋ - {this.song[index].ar[0].name}
+                                    </p>
+                                </div>
+                                <Icon icon="iconamoon:like-light" color="#9f9f9f" class="w-[3.5vw] h-[3.5vw]"/>
+                            </div>
+                            <p class="text-[3.25vw] text-[#323232] my-[3vw]">
+                                {item.content}
+                            </p>
+                            <p class="text-[2.5vw] text-[#9f9f9f]">
+                                {new Date(item.time).getFullYear()}年{new Date(item.time).getMonth() + 1}月{new Date(item.time).getDate()}日
+                            </p>
+                        </div>
+                    ))}
                 </Card>
+            ) : ('')}
+
+            {this.isLoading == true ? (
+                <Card mt="3vw">
+                    <div class="flex items-center justify-between mb-[4vw]">
+                        <h1 class="text-[4vw] font-black text-[#333333] flex  items-center">基本信息</h1>
+                        <div class="border-[#ccc] border-[.1vw] border-solid py-[1vw] px-[2.25vw] rounded-[5vw] text-[2.5vw]">
+                            领取村民证
+                        </div>
+                    </div>
+                    <div class="flex flex-col text-[2.75vw] text-[#656565]">
+                        <p>
+                            <span>村龄：</span>
+                            <span>{this.createTime}年（{new Date(this.detail.profile.createTime).getFullYear()}年{new Date(this.detail.profile.createTime).getMonth() + 1}月注册）</span>
+                        </p>
+                        <p>
+                            <span>性别：</span>
+                            <span>{this.detail.profile.gender == 1 ? '男' : '女'}</span>
+                        </p>
+                        <p>
+                            <span>年龄：</span>
+                            <span>{this.birth}</span>
+                        </p>
+                    </div>
+                    <div class="flex justify-center items-center mt-[4.75vw] pt-[3vw] border-t-[.1vw] border-[#ccccccA6] border-solid text-[#656565] text-[2.75vw] w-[92vw] ml-[-4vw]">
+                        <span>查看全部</span>
+                        <Icon icon="ps:right" color="#656565" class="w-[3vw] h-[3vw]"/>
+                    </div>
+                </Card>
+            ) : ('')}
+             {this.isLoading == true ? (
+                <van-popup v-model={this.show} overlay={false} transition="feat">
+                    <div class=" w-screen h-screen bg-[#fff]">
+                        <header class="flex items-center w-screen p-[4vw]">
+                            <span onClick={this.shows}>
+                                <Icon icon="ph:arrow-left-light" color="#333333" class="w-[5vw] h-[5vw] mr-[4.25vw]"/>
+                            </span>
+                            <span class="text-[4.25vw] font-[700]">我的资料</span>
+                        </header>
+                        <div class="pt-[2vw] w-screen bg-[#F6F6F6] text-[3.5vw]">
+                            <ul class="bg-[#fff] py-[2vw] pl-[4vw]">
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>头像</span></div>
+                                    <div class="w-[10vw] h-[10vw] rounded-[50%]" style={{ backgroundImage: `url(${this.user.profile.avatarUrl})`, backgroundSize: '100%', backgroundRepeat: "no-repeat"}}></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>昵称</span></div>
+                                    <div><span class="text-[#989898]">{this.user.profile.nickname}</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>性别</span></div>
+                                    <div><span class="text-[#989898]">{this.detail.profile.gender == 1 ? '男' : '女'}</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw]">
+                                    <div><span>二维码</span></div>
+                                    <Icon icon="ph:qr-code-light" color="#989898" class="w-[5vw] h-[5vw] ml-[.25vw]"/>
+                                </li>   
+                            </ul>
+                            <ul class="bg-[#fff] py-[2vw] pl-[4vw] mt-[2vw]">
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>生日</span></div>
+                                    <div>
+                                        <span class="text-[#989898]">
+                                        {new Date(this.detail.profile.birthday).getFullYear()}-{new Date(this.detail.profile.birthday).getMonth()+1}-{new Date(this.detail.profile.birthday).getDate()}
+                                        </span>
+                                    </div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>地区</span></div>
+                                    <div><span class="text-[#989898]">{this.areaList.province_list[this.detail.profile.province]} {this.areaList.city_list[this.detail.profile.city]}</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>大学</span></div>
+                                    <div><span class="text-[#989898BF]">未填写</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>音乐标签</span></div>
+                                    <div><span class="text-[#989898BF]">选择标签</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw]">
+                                    <div><span>简介</span></div>
+                                    <div><span class="text-[#989898BF]">还没有简介</span></div>
+                                </li>   
+                            </ul>
+                            <ul class="bg-[#fff] py-[2vw] pl-[4vw] mt-[2vw]">
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <div><span>个人主页隐私设置</span></div>
+                                </li>   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw]">
+                                    <div><span>主页模块顺序设置</span></div>
+                                </li>   
+                            </ul>
+                            <ul class="bg-[#fff] py-[2vw] pl-[4vw] mt-[2vw] pb-[47vw]">   
+                                <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw]">
+                                    <div><span>账号和绑定设置</span></div>
+                                </li>   
+                            </ul>
+                        </div>
+                    </div>
+                </van-popup>
             ) : ('')}
         </div >
     },
@@ -232,7 +354,11 @@ export default {
             birth: '',
             createTime: '',
             playlist: [],
-            history:[]
+            history:[],
+            song:[],
+            color:'#fff',
+            name:"",
+            show:false,
         }
     },
     async created() {
@@ -245,11 +371,13 @@ export default {
         this.detail = detail.data;
         this.playlist = playlist.data;
         this.history = history.data.data
-        console.log(history)
+        const song = await getSong(this.getparse(this.history.comments))
+        this.song = song.data.songs
+        console.log(this.user)
         this.birth = this.birthday(this.detail.profile.birthday)
         //村龄判断
         if (new Date().getMonth() + 1 - new Date(this.detail.profile.createTime).getMonth() + 1 > 0) {
-            this.createTime = new Date().getFullYear() - new Date(this.detail.profile.createTime).getFullYear() - 1
+            this.createTime = new Date().getFullYear() - new Date(this.detail.profile.createTime).getFullYear()
         } else {
             this.createTime = new Date().getFullYear() - new Date(this.detail.profile.createTime).getFullYear()
         }
@@ -289,7 +417,53 @@ export default {
                 zodiacSign = '双鱼座';
             }
             return (year + '')[2] + '0后' + ' ' + zodiacSign;
+        },
+        getparse(item){
+            let arr = []
+            item.forEach((val)=>{
+                const obj = JSON.parse(val.resourceInfo)
+                arr.push(obj.id);
+            })
+            return arr.join(',')
+        },
+        shows(){
+            this.show = !this.show
+        },
+        toIndex(){
+            this.$router.push('./IndexView')
+        },
+        handleScroll(){
+            const user = document.getElementById('userName');
+            const img = document.getElementById('userImg');
+            const head = document.getElementById('head');
+            const windowWidth = window.innerWidth*.6;
+            let j = user.getBoundingClientRect().top/windowWidth<0.01 ? 0 :  user.getBoundingClientRect().top/windowWidth;
+            let I = img.getBoundingClientRect().top/windowWidth<0.01 ? 0 :  img.getBoundingClientRect().top/windowWidth+.2;
+            img.style.transition = 'opacity .2s'
+            user.style.opacity = j +''
+            img.style.opacity = I + ''
+            head.style.transition = 'background .2s'
+            if(user.getBoundingClientRect().top<window.innerWidth*.35){
+                head.style.backgroundColor = 'rgba(255,255,255,.5)'
+                this.color = '#333'
+                this.name = ''
+                if(user.getBoundingClientRect().top<-window.innerWidth*.01){
+                    head.style.backgroundColor = 'rgba(255,255,255,1)'
+                    this.name = this.user.profile.nickname
+                }
+            }else if(user.getBoundingClientRect().top>window.innerWidth*.35){
+                head.style.backgroundColor = 'rgba(255,255,255,0)'
+                this.color = '#fff'
+                this.name = ''
+            }
         }
-
-    }
+    },
+    mounted() {
+        window.addEventListener('scroll',this.handleScroll); 
+    },
+    beforeDestroy() {
+        // 在组件卸载前移除滚动事件监听器
+        window.removeEventListener('scroll',this.handleScroll);
+    },
 }
+

@@ -49,4 +49,7 @@ export const getUserPlaylist = (uid) => http.get('/user/playlist',{params:{uid}}
 export const getUserDetail = (uid) => http.get('/user/detail',{params:{uid}})
 export const getUserBinding = (uid) => http.get('/user/binding',{params:{uid}})
 //历史评论
-export const getUserHistory = (uid) => http.get('/user/comment/history',{params:{uid}})
+export const getUserHistory = (uid,time=0) => http.get('/user/comment/history',{params:{uid,time}})
+//歌曲详情
+export const getSong = (ids) => http.get('/song/detail',{params:{ids}})
+

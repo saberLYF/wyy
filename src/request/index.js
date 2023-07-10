@@ -52,4 +52,9 @@ export const getUserBinding = (uid) => http.get('/user/binding',{params:{uid}})
 export const getUserHistory = (uid,time=0) => http.get('/user/comment/history',{params:{uid,time}})
 //歌曲详情
 export const getSong = (ids) => http.get('/song/detail',{params:{ids}})
+//个人收藏
+export const getUserSubcount= () => http.get('/topic/sublist')
+
+export const setUser = (gender,birthday,nickname,province,city,signature) => http.get('/user/update',{params:{gender,birthday,nickname,province,city,signature}})
+
 

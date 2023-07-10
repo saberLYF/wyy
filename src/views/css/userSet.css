@@ -18,3 +18,25 @@
   opacity: 0;
   top: 150%;
 }
+.featSet-enter {
+  opacity: 0;
+}
+.featSet-enter-to {
+  opacity: 1;
+}
+.featSet-leave {
+  opacity: 1;
+}
+.featSet-leave-to {
+  opacity: 0;
+}
+#icont {
+  transition: all 0.5s ease;
+  transform: rotate(180deg);
+}
+.ulList > li {
+  transition: all 0.75s;
+}
+.reds {
+  color: red;
+}

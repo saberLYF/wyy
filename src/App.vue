@@ -3,21 +3,23 @@
       <transition mode="out-in" :name="transitionName">
         <router-view/>
       </transition>
+      <!-- 播放器 -->
+      <Player  class="fixed bottom-0 bg-[#fff] z-[30]" />
   </div>
 </template>
 <script>
+import Player from '@/components/components/play/Player.vue';
 export default {
+  components: { Player },
     data() {
         return {
-          transitionName:'slide'
+          transitionName:'slide',
         };
     },
-    watch: {
-
-  },
 }
 </script>
 <style>
+
 .slide-enter-active,
 .slide-leave-active {
     transition: all .75s ease-in;

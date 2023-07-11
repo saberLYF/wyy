@@ -56,5 +56,11 @@ export const getSong = (ids) => http.get('/song/detail',{params:{ids}})
 export const getUserSubcount= () => http.get('/topic/sublist')
 
 export const setUser = (gender,birthday,nickname,province,city,signature) => http.get('/user/update',{params:{gender,birthday,nickname,province,city,signature}})
+//重复昵称检测
+export const getNickname = (nickname) => http.get('/nickname/check',{params:{nickname}})
 
-
+// 播放歌曲
+export const getTrackDetail = (id) =>
+  http.get('/song/detail', { params: { ids: id } });
+export const getMP3 = (id) =>
+  http.get('/song/url/v1', { params: { id, level: 'standard' } });

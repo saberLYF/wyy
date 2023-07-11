@@ -1,9 +1,10 @@
 import styled from 'styled-components-vue'
 import Vue from 'vue';
-import { Tab, Tabs, Area, Popup, Calendar, Cell, CellGroup} from 'vant';
+import { Tab, Tabs, Area, Popup, Calendar, Cell, CellGroup, DatetimePicker } from 'vant';
 import { areaList } from '@vant/area-data';
-import { getUserAccount, getUserDetail, getUserBinding, getUserPlaylist, getUserHistory, getSong, getUserSubcount, setUser } from '@/request/index'
+import { getUserAccount, getUserDetail, getUserBinding, getUserPlaylist, getUserHistory, getSong, getUserSubcount, setUser, getNickname, } from '@/request/index'
 import { forEach } from 'lodash';
+import _ from "lodash";
 import '@/views/css/userSet.less'
 Vue.use(Area);
 Vue.use(Tab);
@@ -12,6 +13,38 @@ Vue.use(Popup);
 Vue.use(Calendar);
 Vue.use(Cell);
 Vue.use(CellGroup);
+Vue.use(DatetimePicker)
+const vanArea = styled.section`
+.van-area{
+    height:57vw;
+    margin-top:9vw;
+}
+.van-picker__columns {
+    height:57vw;
+}
+.van-picker__toolbar{
+    position: absolute;
+    bottom: -14vw;
+    right: 0;
+    z-index: 9;
+}
+.van-picker-column {
+    height:57vw
+}
+.van-picker__cancel,
+.van-picker__confirm {
+    color:#e24b49;
+    font-size:3vw;
+    font-weight: 500;
+}
+.van-picker-column{
+    font-size:3vw;
+    font-weight: 500;
+}
+.van-picker-column__item--selected {
+    color:#e24b49;
+}
+`
 const vanpopup = styled.section`
 .van-popup {
     background-color:rgba(0,0,0,0);
@@ -79,6 +112,7 @@ const Card = styled.div`
 export default {
     render() {
         return <div class=" w-screen relative overflow-hidden  bg-[#f5f5f5] pb-[8vw]">
+            {this.isLoading == true ? (
             <header class="w-screen h-[13.5vw] p-[4vw] fixed top-0 z-[100]" id='head'>
                 <div class="flex justify-between items-center ">
                     <div class="flex items-center">
@@ -90,6 +124,7 @@ export default {
                     <Icon icon="ri:more-2-fill" color={this.color} class="w-[5vw] h-[5vw] " />
                 </div>
             </header>
+             ) : ('')}
             {this.isLoading == true ? (
                 <Wrap class="bg-[#baaa8c] h-[50vw] flex justify-center items-start p-[4vw] relative "
                     backgroundUrl={this.user.profile.backgroundUrl == undefined ? '' : this.user.profile.backgroundUrl}
@@ -298,7 +333,7 @@ export default {
                                         <div><span>头像</span></div>
                                         <div class="w-[10vw] h-[10vw] rounded-[50%]" style={{ backgroundImage: `url(${this.user.profile.avatarUrl})`, backgroundSize: '100%', backgroundRepeat: "no-repeat" }}></div>
                                     </li>
-                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]" onClick={this.setName}>
                                         <div><span>昵称</span></div>
                                         <div><span class="text-[#989898]">{this.user.profile.nickname}</span></div>
                                     </li>
@@ -306,28 +341,13 @@ export default {
                                         <div><span>性别</span></div>
                                         <div><span class="text-[#989898]">{this.detail.profile.gender == 1 ? '男' : this.detail.profile.gender == 0 ? '保密' : '女'}</span></div>
                                     </li>
-                                    {
-                                        this.isLoading == true ? (
-                                            <vanpopup>
-                                                <van-popup v-model={this.sex}>
-                                                    <div class="w-[87vw] mx-[6.5vw] rounded-[3vw] text-[3vw] font-[550] text-[#333] bg-[#fff]">
-                                                        <van-cell title="男" clickable={true} class=" rounded-[3vw]" value={this.detail.profile.gender == 1 ? '✔' : ''} value-class={'reds'}/>
-                                                        <van-cell title="女" clickable={true} class=" rounded-[3vw]" value={this.detail.profile.gender == 2 ? '✔' : ''} value-class={'reds'}/>
-                                                    </div>
-                                                    <div class="flex items-center justify-center w-[8vw] h-[8vw] rounded-[50%] mx-auto bg-[#cccccccc] mt-[9vw]" onClick={this.setSex}>
-                                                        <Icon icon="system-uicons:cross" color="white" class="w-[5vw] h-[5vw]"/>
-                                                    </div>
-                                                </van-popup>
-                                            </vanpopup>
-                                        ) : ('')
-                                    }
                                     <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw]">
                                         <div><span>二维码</span></div>
                                         <Icon icon="ph:qr-code-light" color="#989898" class="w-[5vw] h-[5vw] ml-[.25vw]" />
                                     </li>
                                 </ul>
                                 <ul class="bg-[#fff] py-[2vw] pl-[4vw] mt-[2vw] ulList">
-                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]" onClick={this.mybirthday}>
                                         <div><span>生日</span></div>
                                         <div>
                                             <span class="text-[#989898]">
@@ -335,7 +355,7 @@ export default {
                                             </span>
                                         </div>
                                     </li>
-                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]">
+                                    <li class="pr-[4vw] py-[2vw] flex justify-between items-center h-[12vw] border-b-[.1vw] border-solid border-[#cccccc80]" onClick={this.mycitys}>
                                         <div><span>地区</span></div>
                                         <div><span class="text-[#989898]">{this.areaList.province_list[this.detail.profile.province]} {this.areaList.city_list[this.detail.profile.city]}</span></div>
                                     </li>
@@ -370,6 +390,74 @@ export default {
                     </van-popup>
                 ) : ('')
             }
+            {
+                this.isLoading == true ? (
+                    <vanpopup>
+                        <van-popup v-model={this.sex}>
+                            <div class="w-[87vw] mx-[6.5vw] rounded-[3vw] text-[3vw] font-[550] text-[#333] bg-[#fff]">
+                                <van-cell title="男" clickable={true} class=" rounded-[3vw]" value={this.detail.profile.gender == 1 ? '✔' : ''} value-class={'reds'} onClick={this.setSexTwo} />
+                                <van-cell title="女" clickable={true} class=" rounded-[3vw]" value={this.detail.profile.gender == 2 ? '✔' : ''} value-class={'reds'} onClick={this.setSexz} />
+                            </div>
+                            <div class="flex items-center justify-center w-[8vw] h-[8vw] rounded-[50%] mx-auto bg-[#cccccccc] mt-[9vw]" onClick={this.setSex}>
+                                <Icon icon="system-uicons:cross" color="white" class="w-[5vw] h-[5vw]" />
+                            </div>
+                        </van-popup>
+                    </vanpopup>
+                ) : ('')
+            }
+            <vanpopup>
+                <van-popup v-model={this.mycity} lock-scroll={true}>
+                    <div class="w-[87vw] h-[96vw] rounded-[4vw] mx-[6.5vw] p-[5.25vw] bg-[#fff] relative overflow-hidden">
+                        <h1 class="text-[4vw] font-[700] text-[#333]">请选择省市</h1>
+                        <vanArea>
+                            <van-area title="" area-list={this.areaList} columns-num="2" item-height="13vw" value="420000" onCancel={this.mycitys} onConfirm={this.handleConfirm} />
+                        </vanArea>
+                    </div>
+                </van-popup>
+            </vanpopup>
+            <van-popup v-model={this.names} overlay={false}>
+                <section class="flex flex-col w-screen h-screen">
+                    <div class="p-[4vw] flex justify-between items-center">
+                        <div class="flex justify-between items-center">
+                            <span onClick={this.setName}>
+                                <Icon icon="ph:arrow-left-light" color="#333333" class="w-[5vw] h-[5vw] mr-[4.25vw]" />
+                            </span>
+                            <span class="text-[4.25vw] font-[700]">修改昵称</span>
+                        </div>
+                        <span class="text-[4.25vw] font-[700]" onClick={this.setNamess}>
+                            保存
+                        </span>
+                    </div>
+                    <div class="w-[100%] px-[4vw] py-[2vw] relative">
+                        <input type="text" maxlength="31" v-model={this.userNames} class="w-[100%] h-[8vw] text-[4.25vw] p-[1vw] pr-[6.5vw] mb-[1.5vw] border-b-[.075vw] border-[#cccccccc] border-solid" />
+                        <span onClick={this.rmInp}>
+                            <Icon icon="system-uicons:cross" color="#ccc" class="w-[5vw] h-[5vw] absolute top-[3vw] right-[5vw]" />
+                        </span>
+                        <p class={this.setnames == '昵称不符合规范' || this.setnames == '昵称重复' ? 'text-[red]' : 'text-[#00FF9B]'}>
+                            <span class="text-[2.75vw]">
+                                {this.setnames == '昵称不符合规范' ? this.setnames + ':至少2个汉字或4字母且只支持_-2个符号,上限为30字符' : this.setnames}
+                            </span>
+                        </p>
+                    </div>
+                </section>
+            </van-popup>
+
+            <vanpopup>
+                <van-popup v-model={this.mybirth} lock-scroll={true}>
+                    <div class="w-[92vw] h-[96vw] rounded-[4vw] mx-[4vw] p-[5.25vw] bg-[#fff] relative overflow-hidden">
+                        <h1 class="text-[4vw] font-[700] text-[#333]">请选择</h1>
+                        <van-datetime-picker
+                            v-model={this.currentDate}
+                            type="date"
+                            title="选择年月日"
+                            min-date={this.minDate}
+                            max-date={this.maxDate}
+                            onConfirm={this.mypicker}
+                            onCancel={this.mybirthday}
+                        />
+                    </div>
+                </van-popup>
+            </vanpopup>
         </div >
     },
     data() {
@@ -388,7 +476,16 @@ export default {
             name: "",
             show: false,
             isVisible: false,
-            sex: false,
+            sex: false,//修改性别
+            arrSet: [],//修改请求数组，包含所有参数
+            names: false,//修改昵称
+            userNames: '',//input双向绑定数据
+            setnames: '',//表单验证提示
+            mycity: false,//修改省市区
+            minDate: new Date(1970, 1, 1),
+            maxDate: new Date(2030, 12, 31),
+            currentDate: new Date(2021, 0, 17),
+            mybirth: false,
         }
     },
     async created() {
@@ -411,7 +508,34 @@ export default {
             this.createTime = new Date().getFullYear() - new Date(this.detail.profile.createTime).getFullYear()
         }
         //所有数据请求完成后
+        this.userNames = this.detail.profile.nickname;
+        this.arrSet = [this.detail.profile.gender, this.detail.profile.birthday, this.detail.profile.nickname, this.detail.profile.province, this.detail.profile.city, this.detail.profile.signature]
+        console.log(this.areaList.province_list[110000])
         this.isLoading = true
+    },
+    watch: {
+        userNames: _.debounce(async function (keywords) {
+            if (this.userNames != '') {
+                const res = await getNickname(keywords);
+                // res.data.message == undefined ? res.data.duplicated == true ? this.setnames = '昵称重复' : '昵称可用' : this.setnames = res.data.message
+                if (this.userNames == this.user.profile.nickname) {
+                    this.setnames = ''
+                } else {
+                    if (res.data.message == undefined) {
+                        if (res.data.duplicated == true) {
+                            this.setnames = '昵称重复'
+                        } else if (res.data.duplicated == false) {
+                            this.setnames = '昵称可用'
+                        }
+                    } else {
+                        this.setnames = res.data.message
+                    }
+                }
+                console.log(res.data);
+            } else if (this.userNames == '') {
+                this.setnames = ''
+            }
+        }, 300),
     },
     methods: {
         birthday(dates) {
@@ -457,6 +581,11 @@ export default {
         },
         shows() {
             this.show = !this.show
+            if (this.show == true) {
+                const arr = this.detail.profile.gender;
+                this.arrSet[0] = arr;
+                console.log(this.arrSet)
+            }
         },
         toIndex() {
             this.$router.push('./IndexView')
@@ -491,8 +620,66 @@ export default {
                 this.name = ''
             }
         },
-        setSex() {
+        async setSex() {
             this.sex = !this.sex;
+            // const sex = setUser(gender).then()
+            if (this.arrSet[0] != this.detail.profile.gender) {
+                const j = this.detail.profile.gender
+                this.arrSet[0] = j
+                const res = await setUser(this.arrSet[0], this.arrSet[1], this.arrSet[2], this.arrSet[3], this.arrSet[4], this.arrSet[5]).then((res) => {
+                    console.log('修改性别请求成功')
+                }).catch((err) => console.log(err))
+            }
+        },
+        setSexTwo() {
+            this.detail.profile.gender = 1
+        },
+        setSexz() {
+            this.detail.profile.gender = 2
+        },
+        setName() {
+            this.names = !this.names;
+        },
+        async setNamess() {
+            if (this.setnames == '昵称可用') {
+                this.names = !this.names;
+                this.arrSet[2] = this.userNames
+                this.user.profile.nickname = this.userNames
+                const res = await setUser(this.arrSet[0], this.arrSet[1], this.arrSet[2], this.arrSet[3], this.arrSet[4], this.arrSet[5]).then((res) => {
+                    console.log('修改昵称请求成功')
+                }).catch((err) => console.log(err))
+                this.userNames = this.detail.profile.nickname;
+            }
+        },
+        rmInp() {
+            this.userNames = ''
+        },
+        mycitys() {
+            this.mycity = !this.mycity
+        },
+        async handleConfirm(val) {
+            this.mycity = !this.mycity
+            this.arrSet[3] = Number(val[0].code)
+            this.arrSet[4] = Number(val[1].code)
+            this.detail.profile.province = Number(val[0].code)
+            this.detail.profile.city = Number(val[1].code)
+            const res = await setUser(this.arrSet[0], this.arrSet[1], this.arrSet[2], this.arrSet[3], this.arrSet[4], this.arrSet[5]).then((res) => {
+                console.log('修改地区请求成功')
+            }).catch((err) => console.log(err))
+            console.log(val)
+        },
+        mybirthday() {
+            this.mybirth = !this.mybirth
+        },
+        async mypicker(value) {
+            this.mybirth = !this.mybirth
+
+            const val = new Date(value).getTime();
+            this.arrSet[1] = val;
+            this.detail.profile.birthday = val;
+            const res = await setUser(this.arrSet[0], this.arrSet[1], this.arrSet[2], this.arrSet[3], this.arrSet[4], this.arrSet[5]).then((res) => {
+                console.log('修改生日请求成功')
+            }).catch((err) => console.log(err))
         }
     },
     mounted() {

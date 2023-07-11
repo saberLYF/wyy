@@ -21,10 +21,10 @@ export default [
       },
       {
         path:'/Login',
-        component:()=>import('@/views/Login.vue')
+        component:()=>import('@/views/Login.vue'),
       },
       {
         path:'/userSet',
-        component:()=>import('@/views/userSet')
+        component:()=>import('@/views/userSet'),
       },
   ];

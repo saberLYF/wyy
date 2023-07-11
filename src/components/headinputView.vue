@@ -440,7 +440,7 @@ export default {
         },
         login(){
             this.$router.push({
-                path: '/Login',
+                path: '/userSet',
             });
         }
     },

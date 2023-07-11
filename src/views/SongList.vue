@@ -82,7 +82,7 @@
                             class="flex h-[15vw] items-center text-[3vw] px-[4vw] justify-between bg-[#fff]">
                             <div class=" flex justify-between items-center">
                                 <Icon icon="icon-park-solid:play" color="#fe3e31" class="w-[5vw] h-[5vw] mr-[4vw]" />
-                                <span class="font-[600] mr-[3vw]">播放全部</span>
+                                <span class="font-[600] mr-[3vw]"  @click="playAll">播放全部</span>
                                 <span class="text-[#979795] text-[2vw]">({{ song.length }})</span>
                             </div>
                             <div class="flex w-[10vw]  justify-between items-center">
@@ -253,7 +253,13 @@ export default {
             this.$router.push({
                 path: '/IndexView'
             });
-        }
+        },
+        playAll() {
+            window.$player.replacePlaylist(
+                this.song.map((song) => song.id, '', '', '')
+            );
+            console.log('$player', window.$player._currentTrack?.al?.picUrl);
+        },
     },
     mounted() {
         // window.addEventListener('scroll',()=>{

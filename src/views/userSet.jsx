@@ -517,7 +517,6 @@ export default {
         userNames: _.debounce(async function (keywords) {
             if (this.userNames != '') {
                 const res = await getNickname(keywords);
-                // res.data.message == undefined ? res.data.duplicated == true ? this.setnames = '昵称重复' : '昵称可用' : this.setnames = res.data.message
                 if (this.userNames == this.user.profile.nickname) {
                     this.setnames = ''
                 } else {
@@ -673,7 +672,6 @@ export default {
         },
         async mypicker(value) {
             this.mybirth = !this.mybirth
-
             const val = new Date(value).getTime();
             this.arrSet[1] = val;
             this.detail.profile.birthday = val;

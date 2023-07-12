@@ -5,9 +5,10 @@
         </template>
         <template v-else>
             <header class="w-[100%]" :style="{ backgroundColor: rgb }">
+                <pop>
                 <van-sticky>
-                    <van-button type="primary">
-                        <div class="flex w-[100%] items-center justify-between text-[4vw] text-[#fff] p-[4vw]"
+                    <!-- <van-button type="primary"> -->
+                        <div class="flex w-[100%] items-center justify-between text-[4vw] text-[#fff] p-[3vw]"
                             :style="{ backgroundColor: rgb }" id="TOP">
                             <div class="flex items-center">
                                 <Icon icon="ph:arrow-left-light" :color="color" width="36" height="36"
@@ -27,8 +28,9 @@
                                     class="w-[5vw] h-[5vw] " />
                             </div>
                         </div>
-                    </van-button>
+                    <!-- </van-button> -->
                 </van-sticky>
+            </pop>
                 <div class="flex  p-[4vw]">
                     <div class="w-[24vw] h-[24vw] ">
                         <!-- <img :src="imgurl" alt="" class=" rounded-[2.5vw] w-[24vw] h-[24vw]" id="bgimg"> -->
@@ -76,13 +78,13 @@
                 </div>
             </header>
             <section class="w-screen rounded-[3vw] text-[3vw] pb-[5vw]">
+            <pop>
                 <van-sticky :offset-top="'14vw'">
-                    <van-button type="primary">
                         <div id="songListTop"
                             class="flex h-[15vw] items-center text-[3vw] px-[4vw] justify-between bg-[#fff]">
                             <div class=" flex justify-between items-center">
                                 <Icon icon="icon-park-solid:play" color="#fe3e31" class="w-[5vw] h-[5vw] mr-[4vw]" />
-                                <span class="font-[600] mr-[3vw]"  @click="playAll">播放全部</span>
+                                <span class="font-[600] mr-[3vw] text-[4vw]"  @click="playAll">播放全部</span>
                                 <span class="text-[#979795] text-[2vw]">({{ song.length }})</span>
                             </div>
                             <div class="flex w-[10vw]  justify-between items-center">
@@ -90,17 +92,19 @@
                                 <Icon icon="solar:list-check-linear" color="#333331" class="w-[5vw] h-[5vw]" />
                             </div>
                         </div>
-                    </van-button>
                 </van-sticky>
+            </pop>
                 <div class="px-[4vw]">
                     <ul>
                         <li class="flex text-[3vw] justify-between items-center mb-[8vw]" v-for="(item, index) in song"
-                            :key="item.id">
+                            :key="item.id.id" @click="playSingle(item.id)">
                             <div class="flex items-center">
-                                <span class="text-[#979795] mr-[5.75vw] ml-[1vw]">{{ index + 1 }}</span>
+                                <img src="/static/wave.gif" class="red-image w-[3vw] h-[3vw] mr-[5.75vw]"
+                                v-if="item.id === $player._currentTrack.id" alt="" />
+                                <span v-else  class="text-[#979795] mr-[5.75vw] ml-[1vw]">{{ index + 1 }}</span>
                                 <div class="w-[60vw] h-[8vw] ">
                                     <p class="text_nowarp">
-                                        <span class="text_nowarp">{{ item.name }}</span>
+                                        <span class="text_nowarp" :class="item.id === $player._currentTrack.id ? 'text-[red]' : '' ">{{ item.name }}</span>
                                         <span class="text-[#808080] text_nowarp" v-if="item.alia.length != 0"> {{
                                             item.alia[0]
                                         }}</span>
@@ -127,9 +131,19 @@
 import { fetchTrack, fetchSongUser } from '@/request/index'
 import Vue from 'vue';
 import { Sticky, NoticeBar } from 'vant';
+import styled from 'styled-components-vue'
+import store from 'storejs'
+const pop = styled.div`
+.van-sticky--fixed {
+    z-index:29;
+}
+`
 Vue.use(NoticeBar);
 Vue.use(Sticky);
 export default {
+    components: {
+        pop // 注册popup组件
+    },
     data() {
         return {
             lazy: true,
@@ -150,6 +164,7 @@ export default {
             color: '',
             show: false,
             lazy: true,
+            plays_:window.$player?._playing
         }
     },
     async created() {
@@ -255,10 +270,18 @@ export default {
             });
         },
         playAll() {
-            window.$player.replacePlaylist(
-                this.song.map((song) => song.id, '', '', '')
+            this.$player.replacePlaylist(
+                this.song.map((song) => song.id, '', '', ''),
+                store.set('cookie_music', this.song)
             );
-            console.log('$player', window.$player._currentTrack?.al?.picUrl);
+            console.log('$player', window.$player?._currentTrack?.al?.picUrl);
+            this.$store.state.song = this.song
+        },
+        // 播放器 播放单个
+        playSingle(id) {
+            this.$player.replacePlaylist([id], '', '');
+            store.set('cookie_music', this.song);
+            // this.$router.push('/PlayerHome')
         },
     },
     mounted() {
@@ -270,7 +293,6 @@ export default {
         //         window.scrollTo(0,document.querySelector('header').offsetHeight);
         //     }
         // });
-
     }
 }
 </script>
@@ -280,4 +302,8 @@ export default {
     overflow: hidden !important;
     text-overflow: ellipsis !important;
     /* 如果需要在溢出时显示省略号 */
-}</style>
+}
+.red-image {
+    filter: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg'><filter id='colorize'><feColorMatrix type='matrix' values='1 0 0 0 0.698 0 0 0 0 0 0 0 0 0 0 0 0 0 1 0'/></filter></svg>#colorize");
+}
+</style>

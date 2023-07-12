@@ -8,12 +8,16 @@ import Drawer from '@/components/components/slidingbar.vue'
 import Lazyload from '@/components/components/Lazyload/Lazyload.vue'
 import setUser from '@/components/components/setUser/setUser.vue'
 import Vuex from '@/vuex/_index';
-Vue.use(Vuex);
+import {Button} from 'vant'
+import Player from './components/components/Player/player';
+Vue.use(Vuex).use(Button);
+Vue.use(Player)
 Vue.component("Drawer",Drawer)
 Vue.component('Icon', Icon);
 Vue.component("v-switch",v_switch);
 Vue.component('Lazyload',Lazyload);
 Vue.component('setUser',setUser);
+
 
 // import Vuex from '@/vuex';
 // Vue.use(Vuex)
@@ -22,8 +26,8 @@ Vue.component('setUser',setUser);
 // });
 const store = new Vuex.Store({
   state:{
-    count:123,
-    list:[123],
+    count:'音乐列表',
+    song:[],
   }
 })
 window.vm = new Vue({

@@ -8,7 +8,7 @@
   </div>
 </template>
 <script>
-import Player from '@/components/components/play/Player.vue';
+import Player from '@/components/components/Player/Player.vue';
 export default {
   components: { Player },
     data() {

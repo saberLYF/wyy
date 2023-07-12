@@ -1,11 +1,6 @@
-/* eslint-disable class-methods-use-this */
-/* eslint-disable no-unused-expressions */
-/* eslint-disable consistent-return */
-/* eslint-disable no-underscore-dangle */
-// eslint-disable-next-line import/no-extraneous-dependencies
 import { Howl, Howler } from 'howler';
 import { getTrackDetail, getMP3 } from '@/request/index';
-
+import Player from './Player.vue';
 export default class {
   constructor() {
     // 播放器状态
@@ -77,6 +72,7 @@ export default class {
     ifUnplayableThen = 'playNextTrack'
   ) {
     return getTrackDetail(id).then((data) => {
+      console.log(data.data.songs);
       const track = data.data.songs[0];
       this._currentTrack = track;
       return this._getAudioSourceFromNetease(track).then((source) => {
@@ -94,11 +90,12 @@ export default class {
 
   async _getAudioSourceFromNetease(track) {
     const data = await getMP3(track.id);
-    console.log(data.data.data[0].url);
+    // console.log(data.data.data[0].url);
     return new Promise((resolve) => {
       resolve(data.data.data[0].url);
     });
   }
+
   _playAudioSource(source, autoplay = true) {
     Howler.unload();
     this._howler = new Howl({
@@ -155,7 +152,9 @@ export default class {
     this._howler && this._howler.play();
     this._playing = true;
     this._setIntervals();
-    this._duration = this._howler === null ? 0 : this._howler._duration;
+    this._howler.on('load', () => {
+      this._duration = this._howler === null ? 0 : this._howler._duration;
+    });
     // document.title = `${this._currentTrack.name} · ${this._currentTrack.ar[0].name}`;
   }
 
@@ -189,5 +188,9 @@ export default class {
       this.current = trackIDs.indexOf(autoPlayTrackID);
       this._replaceCurrentTrack(autoPlayTrackID);
     }
+  }
+  static install(Vue) {
+    Vue.prototype.$player = Vue.observable(new this());
+    Vue.component('Player', Player);
   }
 }

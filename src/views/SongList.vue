@@ -97,7 +97,7 @@
                 <div class="px-[4vw]">
                     <ul>
                         <li class="flex text-[3vw] justify-between items-center mb-[8vw]" v-for="(item, index) in song"
-                            :key="item.id.id" @click="playSingle(item.id)">
+                            :key="index" @click="playSingle(item.id)">
                             <div class="flex items-center">
                                 <img src="/static/wave.gif" class="red-image w-[3vw] h-[3vw] mr-[5.75vw]"
                                 v-if="item.id === $player._currentTrack.id" alt="" />
@@ -110,7 +110,7 @@
                                         }}</span>
                                     </p>
                                     <p class="text_nowarp text-[#808080] text-[2vw] w-[67vw]" v-if="item.ar.length != 0">
-                                        <span v-for="name in item.ar" :key="name.id">
+                                        <span v-for="(name,index) in item.ar" :key="index+1">
                                             {{ name.name }}
                                         </span>
                                     </p>

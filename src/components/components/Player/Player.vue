@@ -1,18 +1,19 @@
 <template>
-    <div v-if="this.music==[]">
+    <div v-if="this.music == []">
 
     </div>
     <div v-else class="px-[4.5vw] bg-[#F9F9FA] h-[12.5vw] border-b-[1px] border-[#F5F8FA] flex items-center w-[100vw]">
-        <div  class="flex items-center" @click="shows = !shows">
+        <div class="flex items-center" @click="shows = !shows">
             <div class="w-[10vw] h-[10vw] relative flex items-center justify-center rotateAnimation"
                 :class="{ 'paused-animation': !this?.$player?._playing }">
                 <img src="/static/fang.png" alt="" class="absolute top-0 left-0 z-[1]">
                 <img :src="$player._currentTrack?.al?.picUrl" alt="" class="w-[7vw] h-[7vw] rounded-[50%]">
             </div>
-            <div class="text-[3vw] w-[60vw] text-ellipsis overflow-hidden whitespace-nowrap ml-[2vw]" >
+            <div class="text-[3vw] w-[60vw] text-ellipsis overflow-hidden whitespace-nowrap ml-[2vw]">
                 <span class="text-[#3E485E]">{{ $player?._currentTrack?.name }}</span>
                 <span class="text-[#7B8591]">-</span>
-                <span class="text-[#7B8591]">{{ $player?._currentTrack?.ar[0]?.name }}</span>
+                <span class="text-[#7B8591]" v-if="$player?._currentTrack?.ar">{{
+                    $player?._currentTrack?.ar[0]?.name }}</span>
             </div>
         </div>
         <div class="w-[5.6vw] h-[5.6vw] relative ml-[2.2vw] overflow-hidden">
@@ -27,7 +28,7 @@
         </div>
 
         <template v-if="music.length > 0">
-        <!-- 播放列表 -->
+            <!-- 播放列表 -->
             <van-popup class="rounded-t-[20px] px-[5.4vw]" v-model="show" position="bottom" :style="{ height: '60%' }">
                 <div class="playmusic py-[6vw]">
                     <h1 class="text-[4vw] font-extrabold">
@@ -51,21 +52,23 @@
                     </div>
                 </div>
                 <!-- 歌曲列表 -->
-                <div>
-                    <div v-for="(item, index) in music" :key="index.id" class="flex justify-between items-center h-[14vw]"
+                <div v-if="music.length > 0">
+                    <div v-for="(item, index) in music" :key="index + 1" class="flex justify-between items-center h-[14vw]"
                         @click="playSingle(item.id)">
                         <div class="flex items-center">
                             <img src="/static/wave.gif" class="red-image w-[2vw] h-[2vw]"
-                                v-if="item.id === $player._currentTrack.id" alt="" />
+                                v-if="item?.id === $player?._currentTrack?.id" alt="" />
                             <h1 class="text-[4.1vw] ml-[2vw] w-[60vw] line-clamp-1"
-                                :class="item.id === $player._currentTrack.id ? 'text-[#D15B57]' : ''">
-                                {{ item.name }}
-                                <span :class="item.id === $player._currentTrack.id ? 'text-[#D15B57]' : ''"
-                                    class="text-[3vw] text-[#BCBCBC]">-{{ item.ar[0]?.name }}</span>
+                                :class="item.id === $player?._currentTrack?.id ? 'text-[#D15B57]' : ''">
+                                {{ item?.name }}
+                                <span v-if="item?.ar[0]"
+                                    :class="item.id === $player?._currentTrack?.id ? 'text-[#D15B57]' : ''"
+                                    class="text-[3vw] text-[#BCBCBC]">-{{ item?.ar[0]?.name }}</span>
                             </h1>
                         </div>
                         <div class="flex items-center">
-                            <p class="text-[3vw] mr-[6vw] text-[#BCBCBC]" v-if="item.id === $player?._currentTrack?.id">播放来源</p>
+                            <p class="text-[3vw] mr-[6vw] text-[#BCBCBC]" v-if="item.id === $player?._currentTrack?.id">播放来源
+                            </p>
                             <Icon @click.native="fn(index, item.id)" icon="ic:baseline-close" :horizontalFlip="true"
                                 class="text-[5vw] text-[#B1B1B1]" />
                         </div>
@@ -75,45 +78,82 @@
         </template>
         <!-- background: ${this.$player?._currentTrack?.al?.picUrl != undefined ? `url(${this.$player?._currentTrack?.al?.picUrl})`:'rgba(255,255,255,0)'}; -->
         <template v-if="music.length > 0">
-            <pop>
-        <van-popup v-model="shows" position="bottom">
-            <div class=" w-screen h-screen" :style="{background:`url(${$player?._currentTrack?.al?.picUrl})`}">
-            <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col justify-between items-center">
-                <header class="flex justify-between items-center">
-                    <Icon icon="bytesize:chevron-bottom" @click.native="shows = !shows" color="white" class="w-[5vw] h-[5vw]"/>
-                    <div class="text-[#fff] flex flex-col justify-center ">
-                        <p class="text-[4vw] text-center text-ellipsis overflow-hidden whitespace-nowrap w-[75vw]">{{ $player?._currentTrack?.name }}</p>
-                        <div class="flex items-center justify-center">
-                            <p class="text-[3vw] text-[#b7b1b0] ">{{ $player?._currentTrack?.ar[0]?.name }}</p>
-                            <span class="px-[1.5vw] py-[.5vw] bg-[#665c5f] text-[#ccc] text-[2vw] rounded-[1vw] ml-[1vw]">
-                                关注
-                            </span>
-                        </div>
-                    </div>
-                    <Icon icon="bi:share" color="white"  class="w-[5vw] h-[5vw]"/>
-                </header>
-                <section class="w-[80vw] h-[80vw] flex items-center justify-center">
-                    <div class="w-[80vw] h-[80vw] relative" :style="{background:`url(/static/fang.png)`,backgroundSize:'100%',backgroundRepeat:'no-repeat'}">
-                        <img :src="$player?._currentTrack?.al?.picUrl" alt="" class="w-[50vw] h-[50vw] absolute top-[15vw] left-[15vw] rounded-[50%]">
-                        <img src="/static/cz.jpg" alt="">
-                    </div>
-                </section>
-                <footer class=" w-[100%] h-[40vw]">
+            <!-- <pop> -->
+                <van-popup v-model="shows" position="bottom">
+                    <div class="w-screen h-screen"
+                        :style="{ background: `url(${$player?._currentTrack?.al?.picUrl})`, backgroundSize: '100%' }">
+                        <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col items-center relative ">
+                            <header class="flex justify-between items-center mb-[15vh]">
+                                <Icon icon="bytesize:chevron-bottom" @click.native="shows = !shows" color="white"
+                                    class="w-[5vw] h-[5vw]" />
+                                <div class="text-[#fff] flex flex-col justify-center ">
+                                    <p
+                                        class="text-[4vw] text-center text-ellipsis overflow-hidden whitespace-nowrap w-[75vw]">
+                                        {{ $player?._currentTrack?.name }}</p>
+                                    <div class="flex items-center justify-center">
+                                        <p class="text-[3vw] text-[#b7b1b0] " v-if="$player?._currentTrack?.ar">{{
+                                            $player?._currentTrack?.ar[0]?.name }}</p>
+                                        <span
+                                            class="px-[1.5vw] py-[.5vw] bg-[#665c5f] text-[#ccc] text-[2vw] rounded-[1vw] ml-[1vw]">
+                                            关注
+                                        </span>
+                                    </div>
+                                </div>
+                                <Icon icon="bi:share" color="white" class="w-[5vw] h-[5vw]" />
+                            </header>
+                            <img src="/static/cz.png"
+                                        :style="{ transformOrigin: '15.14% 8.8%', transform: `${$player._playing ? 'rotate(360deg)' : 'rotate(335deg)'}`, transition: 'transform 0.75s ease' }"
+                                        alt="" class="w-[26vw] h-[42vw] z-[30] absolute top-[20vw] right-[28vw]">
+                            <section class="w-[80vw] h-[80vw] flex items-center justify-center">
+                                <div class="w-[80vw] h-[80vw] rotateAnimation"
+                                    :class="{ 'paused-animation': !this?.$player?._playing }"
+                                    :style="{ background: `url(/static/fang.png)`, backgroundSize: '100%', backgroundRepeat: 'no-repeat' }">
+                                    <img :src="$player?._currentTrack?.al?.picUrl" alt=""
+                                        class="w-[50vw] h-[50vw] absolute top-[15vw] left-[15vw] rounded-[50%]">
+                                </div>
+                            </section>
+                            <footer class="px-[3vw] w-[100%] h-[40vw] flex flex-col justify-between items-center mt-[11vw]">
+                                <div class="w-[100%] flex justify-between items-center">
+                                    <Icon icon="icon-park-outline:like" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                    <Icon icon="ph:download-simple" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                    <Icon icon="material-symbols:mic-double-rounded" color="#d7dbd5"
+                                        class="w-[5vw] h-[5vw]" />
+                                    <Icon icon="uil:comment-lines" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                    <Icon icon="pajamas:ellipsis-v" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                </div>
+                                <div class="w-[100%] flex justify-between items-center text-[1.75vw] text-[#aaaaaa]">
+                                    <span class="mr-[2vw]" >{{ Math.floor($player._progress/60)<10 ? `0${Math.floor($player._progress/60)}` :`${Math.floor($player._progress/60)}` }}:{{ ($player._progress%60).toFixed(0) < 10 && ($player._progress%60).toFixed(0) != 0 ? `0${($player._progress%60).toFixed(0)}` :  ($player._progress%60).toFixed(0) }}</span>
+                                    <div class="w-[72.59vw]">
+                                        <van-slider v-model="$player._progress"  :max="$player?._duration" inactive-color="#cccccc80" active-color="#fafafa" bar-height="0.28vw"
+                                            button-size="1.3vw">
 
-                </footer>
-            </section>
-        </div>
-        </van-popup>
-    </pop>
-    </template>
+                                        </van-slider>
+                                    </div>
+                                    <span class="ml-[2vw]">{{ Math.floor($player._duration/60)<10 ? `0${Math.floor($player._duration/60)}` :`${Math.floor($player._duration/60)}` }}:{{ ($player._duration%60).toFixed(0)<10 ? `0${($player._duration%60).toFixed(0)}` : ($player._duration%60).toFixed(0)>=60 ? `59`: ($player._duration%60).toFixed(0)}}</span>
+
+                                </div>
+                                <div class="w-[100%] flex justify-between items-center">
+                                    <Icon icon="arcticons:loopboard" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]" />
+                                    <Icon icon="fluent:next-48-filled" color="#e8e8e8" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]"/>
+                                    <Icon :icon="`${$player._playing ? 'ic:baseline-pause-circle' : 'icon-park-solid:play'}`" @click.native="playFn" color="#e8e8e8" class="text-[12.3vw] text-[#e8e8e8]"/>
+
+                                    <Icon icon="fluent:next-48-filled" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]"/>
+                                    <Icon icon="iconamoon:playlist-fill" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]" @click.native="show = !show"/>
+                                </div>
+                            </footer>
+                        </section>
+                    </div>
+                </van-popup>
+            <!-- </pop> -->
+        </template>
     </div>
 </template>
 
 <script>
 import Vue from 'vue';
-import {Circle,Popup} from 'vant';
+import { Circle, Popup, Slider, Button } from 'vant';
 import styled from 'styled-components-vue'
-Vue.use(Circle).use(Popup);
+Vue.use(Circle).use(Popup).use(Slider).use(Button);
 import store from 'storejs'
 const pop = styled.div`
 .van-popup {
@@ -133,16 +173,18 @@ export default {
             angle: 0,
             show: false,
             music: [],
-            shows:false,
+            shows: false,
+            value: 0,
         };
     },
     methods: {
         playFn() {
             this.$player.playOrPause();
+            console.log(this.value );
         },
         fn(index, id) {
             console.log(123)
-            if (this.$player._currentTrack.id === id) {
+            if (this.$player?._currentTrack?.id === id) {
                 this.playSingle(this.music[index + 1].id);
             }
             this.music.splice(index, 1);
@@ -158,12 +200,16 @@ export default {
             store.set('cookie_music', this.music);
             console.log(this.$player)
         },
+        // onChange(value) {
+        //     Toast('当前值：' + value);
+        // },
 
     },
     created() {
         console.log(this.$player)
         this.music = store.get('cookie_music');
     },
+
     computed: {
         text() {
             return this.currentRate.toFixed(0) + '%';
@@ -175,7 +221,7 @@ export default {
 
 <style scoped>
 .rotateAnimation {
-    animation: rotate 10s linear infinite;
+    animation: rotate 15s linear infinite;
 }
 
 @keyframes rotate {
@@ -203,15 +249,22 @@ export default {
     left: 0;
     background-color: white;
 }
+
 .bg-myshow {
-    background-color: rgba(255, 255, 255, 0.4);
-backdrop-filter: blur(30px);
--webkit-backdrop-filter: blur(30px);
-border: 1px solid rgba(255, 255, 255, 0.18);
-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
--webkit-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
-border-radius: 0px;
--webkit-border-radius: 0px;
-color: rgb(255, 255, 255);
+    background-color: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+    -webkit-box-shadow: rgba(142, 142, 142, 0.19) 0px 6px 15px 0px;
+    border-radius: 0px;
+    -webkit-border-radius: 0px;
+    color: rgb(255, 255, 255);
+}
+
+.custom-button {
+    width: 1.3vw;
+    background-color: #fff;
+    border-radius: 50%;
 }
 </style>

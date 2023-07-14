@@ -5,7 +5,7 @@ export default [
     // 路径重定向
     {
       path: '/',
-      redirect: '/userSet',
+      redirect: '/IndexView',
     },
     {
       path: '/IndexView',
@@ -22,6 +22,10 @@ export default [
       {
         path:'/Login',
         component:()=>import('@/views/Login.vue'),
+      },
+      {
+        path:'/LeaderList',
+        component:()=>import('@/views/LeaderList.vue'),
       },
       {
         path:'/userSet',

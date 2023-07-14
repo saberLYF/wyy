@@ -38,7 +38,7 @@
             <p class="text-[3vw] w-[30vw] text-[#3f4658] dark:text-[#fff] font-bold">{{ item.uiElement.mainTitle.title }}
             </p>
             <Icon icon="ph:play-fill" color="white" width="36" height="36"
-              class="absolute w-[4vw] h-[4vw] bottom-[5vw] right-[1.5vw] mr-[2vw] z-[2]" />
+              class="absolute w-[4vw] h-[4vw] top-[25vw] right-[1.5vw] mr-[2vw] z-[2]" />
             <span class="absolute text-[#fff] text-[2vw] flex right-[2vw] top-[3vw] items-center font-bold z-[2]">
               <Icon icon="ph:play-fill" color="white" width="36" height="36" class="w-[2.5vw] h-[2.5vw]" />
               <template

@@ -64,3 +64,6 @@ export const getTrackDetail = (id) =>
   http.get('/song/detail', { params: { ids: id } });
 export const getMP3 = (id) =>
   http.get('/song/url/v1', { params: { id, level: 'standard' } });
+// MV排行
+export const MvList = (area) =>
+  http.get('/top/mv', { params: { limit: 50, area } });

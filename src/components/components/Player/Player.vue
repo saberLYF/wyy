@@ -122,15 +122,16 @@
                                     <Icon icon="pajamas:ellipsis-v" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
                                 </div>
                                 <div class="w-[100%] flex justify-between items-center text-[1.75vw] text-[#aaaaaa]">
-                                    <span class="mr-[2vw]" >{{ Math.floor($player._progress/60)<10 ? `0${Math.floor($player._progress/60)}` :`${Math.floor($player._progress/60)}` }}:{{ ($player._progress%60).toFixed(0) < 10 && ($player._progress%60).toFixed(0) != 0 ? `0${($player._progress%60).toFixed(0)}` :  ($player._progress%60).toFixed(0) }}</span>
+                                    <!-- <span class="mr-[2vw]" >{{ Math.floor($player._progress/60)<10 ? `0${Math.floor($player._progress/60)}` :`${Math.floor($player._progress/60)}` }}:{{ ($player._progress%60).toFixed(0) < 10 && ($player._progress%60).toFixed(0) != 0 ? `0${($player._progress%60).toFixed(0)}` :  ($player._progress%60).toFixed(0) }}</span> -->
+                                        <span class="mr-[2vw]">{{ formatSeconds($player._progress) }}</span>
                                     <div class="w-[72.59vw]">
-                                        <van-slider v-model="$player._progress"  :max="$player?._duration" inactive-color="#cccccc80" active-color="#fafafa" bar-height="0.28vw"
+                                        <van-slider @change="onChange" v-model="$player._progress"  :max="$player?._duration" inactive-color="#cccccc80" active-color="#fafafa" bar-height="0.28vw"
                                             button-size="1.3vw">
 
                                         </van-slider>
                                     </div>
-                                    <span class="ml-[2vw]">{{ Math.floor($player._duration/60)<10 ? `0${Math.floor($player._duration/60)}` :`${Math.floor($player._duration/60)}` }}:{{ ($player._duration%60).toFixed(0)<10 ? `0${($player._duration%60).toFixed(0)}` : ($player._duration%60).toFixed(0)>=60 ? `59`: ($player._duration%60).toFixed(0)}}</span>
-
+                                    <!-- <span class="ml-[2vw]">{{ Math.floor($player._duration/60)<10 ? `0${Math.floor($player._duration/60)}` :`${Math.floor($player._duration/60)}` }}:{{ ($player._duration%60).toFixed(0)<10 ? `0${($player._duration%60).toFixed(0)}` : ($player._duration%60).toFixed(0)>=60 ? `59`: ($player._duration%60).toFixed(0)}}</span> -->
+                                        <span class="ml-[2vw]">{{formatSeconds($player._duration)  }}</span>
                                 </div>
                                 <div class="w-[100%] flex justify-between items-center">
                                     <Icon icon="arcticons:loopboard" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]" />
@@ -200,9 +201,20 @@ export default {
             store.set('cookie_music', this.music);
             console.log(this.$player)
         },
-        // onChange(value) {
-        //     Toast('当前值：' + value);
-        // },
+        onChange(value) {
+            console.log(this.$player);
+            this.$player._progress = value
+
+        },
+        formatSeconds(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const remainingSeconds = Math.floor(seconds % 60);
+
+            const formattedMinutes = String(minutes).padStart(2, '0');
+            const formattedSeconds = String(remainingSeconds).padStart(2, '0');
+
+            return `${formattedMinutes}:${formattedSeconds}`;
+        }
 
     },
     created() {

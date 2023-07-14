@@ -22,7 +22,7 @@
       <!-- 音乐日历 -->
       <calendar :col="cor" />
       <!-- 热门话题 -->
-      <hotTopic :col="cor" />
+      <hotTopic :col="cor" class=""/>
     </div>
   </div>
 </template>

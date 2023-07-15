@@ -67,3 +67,6 @@ export const getMP3 = (id) =>
 // MV排行
 export const MvList = (area) =>
   http.get('/top/mv', { params: { limit: 50, area } });
+
+
+export const getLyric = (id) =>http.get('/lyric', { params: { id } });

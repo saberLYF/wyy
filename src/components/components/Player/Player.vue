@@ -79,32 +79,32 @@
         <!-- background: ${this.$player?._currentTrack?.al?.picUrl != undefined ? `url(${this.$player?._currentTrack?.al?.picUrl})`:'rgba(255,255,255,0)'}; -->
         <template v-if="music.length > 0">
             <!-- <pop> -->
-                <van-popup v-model="shows" position="bottom">
-                    <div class="w-screen h-screen"
-                        :style="{ background: `url(${$player?._currentTrack?.al?.picUrl})`, backgroundSize: '100%' }">
-                        <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col items-center relative ">
-                            <header class="flex justify-between items-center mb-[15vh]">
-                                <Icon icon="bytesize:chevron-bottom" @click.native="shows = !shows" color="white"
-                                    class="w-[5vw] h-[5vw]" />
-                                <div class="text-[#fff] flex flex-col justify-center ">
-                                    <p
-                                        class="text-[4vw] text-center text-ellipsis overflow-hidden whitespace-nowrap w-[75vw]">
-                                        {{ $player?._currentTrack?.name }}</p>
-                                    <div class="flex items-center justify-center">
-                                        <p class="text-[3vw] text-[#b7b1b0] " v-if="$player?._currentTrack?.ar">{{
-                                            $player?._currentTrack?.ar[0]?.name }}</p>
-                                        <span
-                                            class="px-[1.5vw] py-[.5vw] bg-[#665c5f] text-[#ccc] text-[2vw] rounded-[1vw] ml-[1vw]">
-                                            关注
-                                        </span>
-                                    </div>
+            <van-popup v-model="shows" position="bottom">
+                <div class="w-screen h-screen"
+                    :style="{ background: `url(${$player?._currentTrack?.al?.picUrl})`, backgroundSize: '100%' }">
+                    <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col items-center relative ">
+                        <header class="flex justify-between items-center mb-[15vh]">
+                            <Icon icon="bytesize:chevron-bottom" @click.native="shows = !shows" color="white"
+                                class="w-[5vw] h-[5vw]" />
+                            <div class="text-[#fff] flex flex-col justify-center ">
+                                <p class="text-[4vw] text-center text-ellipsis overflow-hidden whitespace-nowrap w-[75vw]">
+                                    {{ $player?._currentTrack?.name }}</p>
+                                <div class="flex items-center justify-center">
+                                    <p class="text-[3vw] text-[#b7b1b0] " v-if="$player?._currentTrack?.ar">{{
+                                        $player?._currentTrack?.ar[0]?.name }}</p>
+                                    <span
+                                        class="px-[1.5vw] py-[.5vw] bg-[#665c5f] text-[#ccc] text-[2vw] rounded-[1vw] ml-[1vw]">
+                                        关注
+                                    </span>
                                 </div>
-                                <Icon icon="bi:share" color="white" class="w-[5vw] h-[5vw]" />
-                            </header>
-                            <img src="/static/cz.png"
-                                        :style="{ transformOrigin: '15.14% 8.8%', transform: `${$player._playing ? 'rotate(360deg)' : 'rotate(335deg)'}`, transition: 'transform 0.75s ease' }"
-                                        alt="" class="w-[26vw] h-[42vw] z-[30] absolute top-[20vw] right-[28vw]">
-                            <section class="w-[80vw] h-[80vw] flex items-center justify-center">
+                            </div>
+                            <Icon icon="bi:share" color="white" class="w-[5vw] h-[5vw]" />
+                        </header>
+                        <transition name="show">
+                            <img v-show="lrc" src="/static/cz.png"
+                                :style="{ transformOrigin: '15.14% 8.8%', transform: `${$player._playing ? 'rotate(360deg)' : 'rotate(335deg)'}`, transition: 'transform 0.75s ease' }"
+                                alt="" class="w-[26vw] h-[42vw] z-[30] absolute top-[20vw] right-[28vw]">
+                            <section class="w-[80vw] h-[80vw] flex items-center justify-center" v-show="lrc" @click="lrc=!lrc">
                                 <div class="w-[80vw] h-[80vw] rotateAnimation"
                                     :class="{ 'paused-animation': !this?.$player?._playing }"
                                     :style="{ background: `url(/static/fang.png)`, backgroundSize: '100%', backgroundRepeat: 'no-repeat' }">
@@ -112,39 +112,48 @@
                                         class="w-[50vw] h-[50vw] absolute top-[15vw] left-[15vw] rounded-[50%]">
                                 </div>
                             </section>
-                            <footer class="px-[3vw] w-[100%] h-[40vw] flex flex-col justify-between items-center mt-[11vw]">
-                                <div class="w-[100%] flex justify-between items-center">
-                                    <Icon icon="icon-park-outline:like" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
-                                    <Icon icon="ph:download-simple" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
-                                    <Icon icon="material-symbols:mic-double-rounded" color="#d7dbd5"
-                                        class="w-[5vw] h-[5vw]" />
-                                    <Icon icon="uil:comment-lines" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
-                                    <Icon icon="pajamas:ellipsis-v" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
-                                </div>
-                                <div class="w-[100%] flex justify-between items-center text-[1.75vw] text-[#aaaaaa]">
-                                    <!-- <span class="mr-[2vw]" >{{ Math.floor($player._progress/60)<10 ? `0${Math.floor($player._progress/60)}` :`${Math.floor($player._progress/60)}` }}:{{ ($player._progress%60).toFixed(0) < 10 && ($player._progress%60).toFixed(0) != 0 ? `0${($player._progress%60).toFixed(0)}` :  ($player._progress%60).toFixed(0) }}</span> -->
-                                        <span class="mr-[2vw]">{{ formatSeconds($player._progress) }}</span>
-                                    <div class="w-[72.59vw]">
-                                        <van-slider @change="onChange" v-model="$player._progress"  :max="$player?._duration" inactive-color="#cccccc80" active-color="#fafafa" bar-height="0.28vw"
-                                            button-size="1.3vw">
+                            <section v-show="!lrc" @click="lrc=!lrc">
 
-                                        </van-slider>
-                                    </div>
-                                    <!-- <span class="ml-[2vw]">{{ Math.floor($player._duration/60)<10 ? `0${Math.floor($player._duration/60)}` :`${Math.floor($player._duration/60)}` }}:{{ ($player._duration%60).toFixed(0)<10 ? `0${($player._duration%60).toFixed(0)}` : ($player._duration%60).toFixed(0)>=60 ? `59`: ($player._duration%60).toFixed(0)}}</span> -->
-                                        <span class="ml-[2vw]">{{formatSeconds($player._duration)  }}</span>
-                                </div>
-                                <div class="w-[100%] flex justify-between items-center">
-                                    <Icon icon="arcticons:loopboard" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]" />
-                                    <Icon icon="fluent:next-48-filled" color="#e8e8e8" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]"/>
-                                    <Icon :icon="`${$player._playing ? 'ic:baseline-pause-circle' : 'icon-park-solid:play'}`" @click.native="playFn" color="#e8e8e8" class="text-[12.3vw] text-[#e8e8e8]"/>
+                            </section>
+                        </transition>
+                        <footer class="px-[3vw] w-[100%] h-[40vw] flex flex-col justify-between items-center mt-[11vw]">
+                            <div class="w-[100%] flex justify-between items-center">
+                                <Icon icon="icon-park-outline:like" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                <Icon icon="ph:download-simple" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                <Icon icon="material-symbols:mic-double-rounded" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                <Icon icon="uil:comment-lines" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                                <Icon icon="pajamas:ellipsis-v" color="#d7dbd5" class="w-[5vw] h-[5vw]" />
+                            </div>
+                            <div class="w-[100%] flex justify-between items-center text-[1.75vw] text-[#aaaaaa]">
+                                <!-- <span class="mr-[2vw]" >{{ Math.floor($player._progress/60)<10 ? `0${Math.floor($player._progress/60)}` :`${Math.floor($player._progress/60)}` }}:{{ ($player._progress%60).toFixed(0) < 10 && ($player._progress%60).toFixed(0) != 0 ? `0${($player._progress%60).toFixed(0)}` :  ($player._progress%60).toFixed(0) }}</span> -->
+                                <span class="mr-[2vw]">{{ formatSeconds($player._progress) }}</span>
+                                <div class="w-[72.59vw]">
+                                    <van-slider @input="onChange" v-model="$player._progress" :max="$player?._duration"
+                                        inactive-color="#cccccc80" active-color="#fafafa" bar-height="0.28vw"
+                                        button-size="1.3vw">
 
-                                    <Icon icon="fluent:next-48-filled" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]"/>
-                                    <Icon icon="iconamoon:playlist-fill" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]" @click.native="show = !show"/>
+                                    </van-slider>
                                 </div>
-                            </footer>
-                        </section>
-                    </div>
-                </van-popup>
+                                <!-- <span class="ml-[2vw]">{{ Math.floor($player._duration/60)<10 ? `0${Math.floor($player._duration/60)}` :`${Math.floor($player._duration/60)}` }}:{{ ($player._duration%60).toFixed(0)<10 ? `0${($player._duration%60).toFixed(0)}` : ($player._duration%60).toFixed(0)>=60 ? `59`: ($player._duration%60).toFixed(0)}}</span> -->
+                                <span class="ml-[2vw]">{{ formatSeconds($player._duration) }}</span>
+                            </div>
+                            <div class="w-[100%] flex justify-between items-center">
+                                <Icon icon="arcticons:loopboard" :horizontalFlip="true" class="text-[5vw] text-[#e8e8e8]" />
+                                <Icon icon="fluent:next-48-filled" color="#e8e8e8" :horizontalFlip="true"
+                                    class="text-[5vw] text-[#e8e8e8]"
+                                    @click.native="playSingle(music[music.findIndex(obj => obj.id === $player?.list[0]) - 1]?.id)" />
+                                <Icon :icon="`${$player._playing ? 'ic:baseline-pause-circle' : 'icon-park-solid:play'}`"
+                                    @click.native="playFn" color="#e8e8e8" class="text-[12.3vw] text-[#e8e8e8]" />
+
+                                <Icon icon="fluent:next-48-filled" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]"
+                                    @click.native="playSingle(music[music.findIndex(obj => obj.id === $player?.list[0]) + 1]?.id)" />
+                                <Icon icon="iconamoon:playlist-fill" color="#e8e8e8" class="text-[5vw] text-[#e8e8e8]"
+                                    @click.native="show = !show" />
+                            </div>
+                        </footer>
+                    </section>
+                </div>
+            </van-popup>
             <!-- </pop> -->
         </template>
     </div>
@@ -154,6 +163,7 @@
 import Vue from 'vue';
 import { Circle, Popup, Slider, Button } from 'vant';
 import styled from 'styled-components-vue'
+import {getLyric} from '@/request/index.js'
 Vue.use(Circle).use(Popup).use(Slider).use(Button);
 import store from 'storejs'
 const pop = styled.div`
@@ -176,12 +186,13 @@ export default {
             music: [],
             shows: false,
             value: 0,
+            text:'',
+            lrc:true
         };
     },
     methods: {
         playFn() {
             this.$player.playOrPause();
-            console.log(this.value );
         },
         fn(index, id) {
             console.log(123)
@@ -197,14 +208,19 @@ export default {
             );
         },
         playSingle(id) {
-            this.$player.replacePlaylist([id], '', '');
-            store.set('cookie_music', this.music);
-            console.log(this.$player)
+            console.log(id);
+            if (id != undefined) {
+                this.getSongLyric(id)
+                this.$player.replacePlaylist([id], '', '');
+                store.set('cookie_music', this.music);
+                console.log(this.$player)
+            }
         },
         onChange(value) {
-            console.log(this.$player);
+            console.log(value);
+            this.$player.playOrPause();
             this.$player._progress = value
-
+            console.log(this.$player._progress);
         },
         formatSeconds(seconds) {
             const minutes = Math.floor(seconds / 60);
@@ -214,14 +230,35 @@ export default {
             const formattedSeconds = String(remainingSeconds).padStart(2, '0');
 
             return `${formattedMinutes}:${formattedSeconds}`;
+        },
+        checkCookieChange() {
+            const currentCookie = document.cookie;
+            this.music = store.get('cookie_music');
+            this.$player._list = this.music
+        },
+        async getSongLyric(id){
+            await getLyric(id).then(res=>{
+                // this.text = res.data.lrc.lyric
+                // console.log(this.text);
+            })
         }
-
     },
     created() {
-        console.log(this.$player)
         this.music = store.get('cookie_music');
+        this.$player._list = this.music
+        this.$player.list = this.music.map(obj => obj.id)
+        console.log(this.$player);
+        setInterval(this.checkCookieChange, 1000);
     },
-
+    watch: {
+        $cookies: {
+            handler(newMusic, oldMusic) {
+                // 处理cookie_music变化的逻辑
+                this.music = store.get('cookie_music');
+                this.$player._list = this.music
+            }
+        }
+    },
     computed: {
         text() {
             return this.currentRate.toFixed(0) + '%';
@@ -278,5 +315,27 @@ export default {
     width: 1.3vw;
     background-color: #fff;
     border-radius: 50%;
+}
+
+
+.show-enter-active,
+.show-leave-active {
+  transition: all .5s;
+}
+
+.show-enter {
+  opacity: 0;
+}
+
+.show-enter-to {
+    opacity: 1;
+}
+
+.show-leave {
+    opacity: 1;
+}
+
+.show-leave-to {
+    opacity: 0;
 }
 </style>

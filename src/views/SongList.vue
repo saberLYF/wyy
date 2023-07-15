@@ -281,6 +281,7 @@ export default {
         playSingle(id) {
             this.$player.replacePlaylist([id], '', '');
             store.set('cookie_music', this.song);
+
             // this.$router.push('/PlayerHome')
         },
     },

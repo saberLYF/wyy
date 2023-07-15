@@ -1,7 +1,7 @@
 <template>
     <div class="p-[4vw] text-[#323232]">
         <header class="flex items-center mb-[7vw]">
-            <Icon icon="ph:arrow-left-light" color="#323232" class="w-[5vw] h-[5vw] mr-[2vw]" />
+            <Icon icon="ph:arrow-left-light" color="#323232" class="w-[5vw] h-[5vw] mr-[2vw]" @click.native="$router.push('./IndexView')"/>
             <h1 class="text-[5vw] font-[600]">MV排行榜</h1>
         </header>
         <warp>
@@ -9,7 +9,7 @@
                 title-inactive-color="#6c6c6c"
                 @change="getData">
                 <van-tab :title="'内地'" @click="getData" name="内地">
-                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0">
+                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0 && show">
                         更新时间{{ new Date(time).getMonth() + 1 }}月{{ new Date(time).getDate() }}日
                     </header>
                     <ul class="w-[100%] mb-[35vw]" v-if="show">
@@ -58,7 +58,7 @@
                     </ul>
                 </van-tab>
                 <van-tab :title="'港台'" @click="getData" name="港台">
-                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0">
+                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0 && show">
                         更新时间{{ new Date(time).getMonth() + 1 }}月{{ new Date(time).getDate() }}日
                     </header>
                     <ul class="w-[100%] mb-[35vw]" v-if="show">
@@ -107,7 +107,7 @@
                     </ul>
                 </van-tab>
                 <van-tab :title="'欧美'" @click="getData" name="欧美">
-                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0">
+                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0 && show">
                         更新时间{{ new Date(time).getMonth() + 1 }}月{{ new Date(time).getDate() }}日
                     </header>
                     <ul class="w-[100%] mb-[35vw]" v-if="show">
@@ -156,7 +156,7 @@
                     </ul>
                 </van-tab>
                 <van-tab :title="'韩国'" @click="getData" name="韩国">
-                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0">
+                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0 && show">
                         更新时间{{ new Date(time).getMonth() + 1 }}月{{ new Date(time).getDate() }}日
                     </header>
                     <ul class="w-[100%] mb-[35vw]" v-if="show">
@@ -205,7 +205,7 @@
                     </ul>
                 </van-tab>
                 <van-tab :title="'日本'" @click="getData" name="日本">
-                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0">
+                    <header class="mb-[5vw] mt-[7vw]" v-if="time != 0 && show">
                         更新时间{{ new Date(time).getMonth() + 1 }}月{{ new Date(time).getDate() }}日
                     </header>
                     <ul class="w-[100%] mb-[35vw]" v-if="show">
@@ -308,10 +308,10 @@ export default {
             console.log(res);
             this.time = res.data.updateTime;
             this.list = res.data.data
+            this.show = true;
             }).catch(err => {
                 console.log(err);
             })
-            this.show = true;
         }
     }
 }

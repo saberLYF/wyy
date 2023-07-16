@@ -82,8 +82,10 @@
             <van-popup v-model="shows" position="bottom">
                 <div class="w-screen h-screen"
                     :style="{ background: `url(${$player?._currentTrack?.al?.picUrl})`, backgroundSize: '100%' }">
-                    <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col items-center relative ">
-                        <header class="flex justify-between items-center mb-[15vh]">
+                    <section class=" w-screen h-screen p-[4vw] bg-myshow flex flex-col justify-between items-center relative ">
+                        <header class="flex justify-between items-center"
+                            :class="lrc==true ? 'mb-[15vh]' : ''"
+                        >
                             <Icon icon="bytesize:chevron-bottom" @click.native="shows = !shows" color="white"
                                 class="w-[5vw] h-[5vw]" />
                             <div class="text-[#fff] flex flex-col justify-center ">
@@ -100,11 +102,26 @@
                             </div>
                             <Icon icon="bi:share" color="white" class="w-[5vw] h-[5vw]" />
                         </header>
+                        <div class="p-[4vw] w-[100%] flex items-center" v-if="!lrc">
+                            <Icon icon="uil:volume" color="rgba(156, 137, 136, 0.5019607843137255)" class="w-[5vw] h-[5vw] mr-[26.5vw]"/>
+                            <div class="flex p-[.25vw] border-[.05vw] border-[#9c898880] border-solid rounded-[5vw] text-[2.75vw]">
+                                <span class="flex py-[.75vw] px-[2.75vw] bg-[#9c898880] rounded-[5vw]">歌词</span>
+                                <span class="flex py-[.75vw] px-[2.75vw]">百科</span>
+                            </div>
+                        </div>
+                        <div v-if="!lrc" class="flex p-[4vw] justify-between items-center absolute top-[71vw]">
+                            <Icon icon="ph:play-fill" color="white" class="w-[5vw] h-[5vw]"/>
+                            <hr class="mx-[2vw] w-[75vw] h-[.1vw] border-[#ffffff80]">
+                            <span class="text-[2vw]">{{ time.slice(0, 5) }}</span>
+                        </div>
                         <transition name="show">
                             <img v-show="lrc" src="/static/cz.png"
                                 :style="{ transformOrigin: '15.14% 8.8%', transform: `${$player._playing ? 'rotate(360deg)' : 'rotate(335deg)'}`, transition: 'transform 0.75s ease' }"
                                 alt="" class="w-[26vw] h-[42vw] z-[30] absolute top-[20vw] right-[28vw]">
-                            <section class="w-[80vw] h-[80vw] flex items-center justify-center" v-show="lrc" @click="lrc=!lrc">
+                        </transition>
+                        <transition name="show">
+                            <section class="w-[80vw] h-[80vw] flex items-center justify-center" v-show="lrc"
+                                @click="lrc = !lrc">
                                 <div class="w-[80vw] h-[80vw] rotateAnimation"
                                     :class="{ 'paused-animation': !this?.$player?._playing }"
                                     :style="{ background: `url(/static/fang.png)`, backgroundSize: '100%', backgroundRepeat: 'no-repeat' }">
@@ -112,8 +129,23 @@
                                         class="w-[50vw] h-[50vw] absolute top-[15vw] left-[15vw] rounded-[50%]">
                                 </div>
                             </section>
-                            <section v-show="!lrc" @click="lrc=!lrc">
-
+                        </transition>
+                        <transition name="show">
+                            <section v-show="!lrc" @click="lrc = !lrc" class="w-[80vw] h-[106.68vw] py-[40vw] overflow-auto" id="lrcs" @scroll="lrc_" ref="lrcs">
+                                <template v-if="Songtext != null">
+                                <p v-for="(itme,index) in Songtext" :key="index" class="text-center py-[5vw] text-[#cccccc80]" 
+                                    >
+                                    <template v-if="itme != '\n'">
+                                       <span class="flex text-[2.75vw] lrc   items-center justify-center"
+                                       
+                                       > {{ itme.replace(/\n/g, '') }} </span>
+                                    </template>
+                                    <template v-else>
+                                        <br>
+                                        <!-- :class="document.querySelectorAll('.lrc')[index].getBoundingClientRect().top > window.innerWidth*0.674 && $refs.index.getBoundingClientRect().top < window.innerWidth*0.738 ? 'text-[#fff]' : '' " -->
+                                    </template>
+                                </p>
+                            </template>
                             </section>
                         </transition>
                         <footer class="px-[3vw] w-[100%] h-[40vw] flex flex-col justify-between items-center mt-[11vw]">
@@ -163,7 +195,7 @@
 import Vue from 'vue';
 import { Circle, Popup, Slider, Button } from 'vant';
 import styled from 'styled-components-vue'
-import {getLyric} from '@/request/index.js'
+import { getLyric } from '@/request/index.js'
 Vue.use(Circle).use(Popup).use(Slider).use(Button);
 import store from 'storejs'
 const pop = styled.div`
@@ -186,13 +218,20 @@ export default {
             music: [],
             shows: false,
             value: 0,
-            text:'',
-            lrc:true
+            Songtext: [],
+            lrc: true,
+            lrcTime:[],
+            time:'',
+            t:null,
         };
+    },
+    mounted() {
+        
     },
     methods: {
         playFn() {
             this.$player.playOrPause();
+            this.$player._playing==true ? this.startTimer() : clearInterval(this.t);
         },
         fn(index, id) {
             console.log(123)
@@ -215,6 +254,7 @@ export default {
                 store.set('cookie_music', this.music);
                 console.log(this.$player)
             }
+            
         },
         onChange(value) {
             console.log(value);
@@ -236,12 +276,54 @@ export default {
             this.music = store.get('cookie_music');
             this.$player._list = this.music
         },
-        async getSongLyric(id){
-            await getLyric(id).then(res=>{
-                // this.text = res.data.lrc.lyric
-                // console.log(this.text);
+        async getSongLyric(id) {
+            const regex = /[^\[\]]+/g;
+            const regeY = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])\.([0-9]{1,3})$/
+            await getLyric(id).then(res => {
+                const str = res.data.lrc.lyric
+                const matches = str.match(regex);
+                for(let key in matches){
+                    if(regeY.test(matches[key])){
+                        this.lrcTime.push(matches[key]);
+                    }else{
+                        this.Songtext.push(matches[key]);
+                    }
+                }
+                console.log(this.lrcTime);
+                console.log(this.Songtext);
             })
-        }
+        },
+        lrc_(){
+            const lrc = document.querySelectorAll('.lrc');
+            for(let i=0;i<lrc.length;i++){
+                if(lrc[i].getBoundingClientRect().top > window.innerWidth*0.68 && lrc[i].getBoundingClientRect().top < window.innerWidth*0.82){
+                    lrc[i].style.color= '#fff'
+                    this.time = this.lrcTime[i]
+                }else{
+                    lrc[i].style.color= '#cccccc80'
+                }
+            }
+        },
+        startTimer() {
+            
+        const lrc = document.querySelectorAll('.lrc');
+        this.t = setInterval(()=>{
+                for(let i=0;i<lrc.length;i++){
+                    const timestamp = this.lrcTime[i]
+                    const [minutes, secondsAndMilliseconds] = timestamp.split(':');
+                    const [seconds, milliseconds] = secondsAndMilliseconds.split('.');
+                    const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000;
+                    if(Number(totalSeconds).toFixed(1) >= this?.$player?._progress.toFixed(1) && Number(totalSeconds).toFixed(1) <= this?.$player?._progress.toFixed(1)+0.2){
+                        // const containerRect = this.$refs.lrcs.getBoundingClientRect();
+                        // const childElementRect = lrc[i].getBoundingClientRect();
+                        // const scrollTop = childElementRect.top - containerRect.top - (containerRect.height - childElementRect.height) / 2;
+                        lrc[i].style.color= '#fff'
+                        this.time = this.lrcTime[i];
+                        // this.$refs.lrcs.scrollTop = scrollTop;
+                    }
+                }
+            },100)
+        },
     },
     created() {
         this.music = store.get('cookie_music');
@@ -320,11 +402,11 @@ export default {
 
 .show-enter-active,
 .show-leave-active {
-  transition: all .5s;
+    transition: all .5s;
 }
 
 .show-enter {
-  opacity: 0;
+    opacity: 0;
 }
 
 .show-enter-to {

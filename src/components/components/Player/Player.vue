@@ -109,10 +109,10 @@
                                 <span class="flex py-[.75vw] px-[2.75vw]">百科</span>
                             </div>
                         </div>
-                        <div v-if="!lrc" class="flex p-[4vw] justify-between items-center absolute top-[71vw]">
+                        <div v-if="!lrc" v-show="n"  class="flex p-[4vw] justify-between items-center absolute top-[71vw]">
                             <Icon icon="ph:play-fill" color="white" class="w-[5vw] h-[5vw]"/>
                             <hr class="mx-[2vw] w-[75vw] h-[.1vw] border-[#ffffff80]">
-                            <span class="text-[2vw]">{{ time.slice(0, 5) }}</span>
+                            <span class="text-[2vw]">{{ time?.slice(0, 5) || '00:00' }}</span>
                         </div>
                         <transition name="show">
                             <img v-show="lrc" src="/static/cz.png"
@@ -131,13 +131,15 @@
                             </section>
                         </transition>
                         <transition name="show">
-                            <section v-show="!lrc" @click="lrc = !lrc" class="w-[80vw] h-[106.68vw] py-[40vw] overflow-auto" id="lrcs" @scroll="lrc_" ref="lrcs">
-                                <template v-if="Songtext != null">
-                                <p v-for="(itme,index) in Songtext" :key="index" class="text-center py-[5vw] text-[#cccccc80]" 
+                            <section v-show="!lrc" @click="lrc = !lrc"   class="w-[80vw] h-[106.68vw] py-[50vw] overflow-auto"  id="lrcs" @scroll="lrc_" ref="lrcs"
+                                    :class="$refs.pnull != undefined ? 'overflow-hidden' : 'overflow-auto'"
+                            >
+                                <template v-if="Songtext != null && lrcTime.length > 1">
+                                <p v-for="(itme,index) in Songtext" :key="index" class="text-center py-[5vw] text-[#cccccc80] lrc"
                                     >
                                     <template v-if="itme != '\n'">
-                                       <span class="flex text-[2.75vw] lrc   items-center justify-center"
-                                       
+                                       <span class="flex text-[2.75vw] items-center justify-center"
+
                                        > {{ itme.replace(/\n/g, '') }} </span>
                                     </template>
                                     <template v-else>
@@ -146,6 +148,7 @@
                                     </template>
                                 </p>
                             </template>
+                            <p v-else class="text-center lrc py-[5vw] text-[#cccccc80]" ref="pnull">纯音乐，请欣赏</p>
                             </section>
                         </transition>
                         <footer class="px-[3vw] w-[100%] h-[40vw] flex flex-col justify-between items-center mt-[11vw]">
@@ -223,10 +226,14 @@ export default {
             lrcTime:[],
             time:'',
             t:null,
+            n:false,
+            timer:null,
+            x:null,
+            flag:0,
         };
     },
     mounted() {
-        
+
     },
     methods: {
         playFn() {
@@ -254,7 +261,7 @@ export default {
                 store.set('cookie_music', this.music);
                 console.log(this.$player)
             }
-            
+
         },
         onChange(value) {
             console.log(value);
@@ -278,10 +285,13 @@ export default {
         },
         async getSongLyric(id) {
             const regex = /[^\[\]]+/g;
+            this.lrcTime = [];
+            this.Songtext = []
             const regeY = /^(0[0-9]|1[0-9]|2[0-3]):([0-5][0-9])\.([0-9]{1,3})$/
             await getLyric(id).then(res => {
                 const str = res.data.lrc.lyric
                 const matches = str.match(regex);
+                console.log(res.data);
                 for(let key in matches){
                     if(regeY.test(matches[key])){
                         this.lrcTime.push(matches[key]);
@@ -294,6 +304,9 @@ export default {
             })
         },
         lrc_(){
+            clearTimeout(this.timer);
+            clearInterval(this.t);
+            this.n = true;
             const lrc = document.querySelectorAll('.lrc');
             for(let i=0;i<lrc.length;i++){
                 if(lrc[i].getBoundingClientRect().top > window.innerWidth*0.68 && lrc[i].getBoundingClientRect().top < window.innerWidth*0.82){
@@ -303,33 +316,49 @@ export default {
                     lrc[i].style.color= '#cccccc80'
                 }
             }
+            this.timer = setTimeout(() => {
+                this.n = false;
+                this.startTimer()
+            }, 500); // 设置延迟时间，单位为毫秒
         },
         startTimer() {
-            
         const lrc = document.querySelectorAll('.lrc');
+        let z = 0
         this.t = setInterval(()=>{
-                for(let i=0;i<lrc.length;i++){
-                    const timestamp = this.lrcTime[i]
-                    const [minutes, secondsAndMilliseconds] = timestamp.split(':');
-                    const [seconds, milliseconds] = secondsAndMilliseconds.split('.');
-                    const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000;
-                    if(Number(totalSeconds).toFixed(1) >= this?.$player?._progress.toFixed(1) && Number(totalSeconds).toFixed(1) <= this?.$player?._progress.toFixed(1)+0.2){
-                        // const containerRect = this.$refs.lrcs.getBoundingClientRect();
-                        // const childElementRect = lrc[i].getBoundingClientRect();
-                        // const scrollTop = childElementRect.top - containerRect.top - (containerRect.height - childElementRect.height) / 2;
-                        lrc[i].style.color= '#fff'
-                        this.time = this.lrcTime[i];
-                        // this.$refs.lrcs.scrollTop = scrollTop;
+                this.n = false;
+                this.$player?._progress
+                if(this.lrcTime.length > 0){
+                    for(let i=z;i<this.lrcTime.length;i++){
+                        if(this.lrcTime[i+1] != undefined){
+                            if(this.setTime(this.lrcTime[i])<this.$player?._progress && this.setTime(this.lrcTime[i+1])>this.$player?._progress){
+                                lrc[i].style.color= '#fff'
+                                this.$refs.lrcs.scrollTop=lrc[i].offsetTop - window.innerWidth*.7
+                                z++;
+                            }
+                        }else if(z==this.lrcTime.length-1){
+                            lrc[i].style.color= '#fff'
+                            this.$refs.lrcs.scrollTop=lrc[i].offsetTop - window.innerWidth*.7
+                            z++;
+                            clearInterval(this.t);
+                        }
                     }
                 }
-            },100)
+            },200)
         },
+        setTime(time){
+            const timestamp = time
+            const [minutes, secondsAndMilliseconds] = timestamp.split(':');
+            const [seconds, milliseconds] = secondsAndMilliseconds.split('.');
+            const totalSeconds = parseInt(minutes) * 60 + parseInt(seconds) + parseInt(milliseconds) / 1000;
+            return totalSeconds.toFixed(2)
+        }
     },
     created() {
         this.music = store.get('cookie_music');
         this.$player._list = this.music
         this.$player.list = this.music.map(obj => obj.id)
         console.log(this.$player);
+        this.x = this.$player?._progress
         setInterval(this.checkCookieChange, 1000);
     },
     watch: {
@@ -339,7 +368,7 @@ export default {
                 this.music = store.get('cookie_music');
                 this.$player._list = this.music
             }
-        }
+        },
     },
     computed: {
         text() {
